@@ -10,6 +10,8 @@ import Home from "./pages/Home/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MasterLayout from "./layouts/MasterLayout";
 import ColorList from "./pages/Masters/Colors/ColorList";
+import CustomerList from "./pages/Masters/Customers/CustomerList";
+import CustomerForm from "./pages/Masters/Customers/CustomerForm";
 
 
 function App() {
@@ -36,8 +38,20 @@ function App() {
                             element={<Home />}
                         />
                         <Route
-                            path="customers/"
+                            path="colors/"
                             element={<ColorList />}
+                        />
+                        <Route
+                            path="customers/"
+                            element={<CustomerList />}
+                        />
+                        <Route
+                            path="customers/add/"
+                            element={<CustomerForm />}
+                        />
+                        <Route
+                            path="customers/add/:id"
+                            element={<CustomerForm />}
                         />
 
                     </Route>

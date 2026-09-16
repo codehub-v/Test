@@ -23,7 +23,7 @@ import {
     CheckCircle,
     PackageCheck,
     BarChart3,
-    LogOut,
+    LogOut, 
 } from "lucide-react";
 
 import "./MasterLayout.css";
@@ -108,6 +108,13 @@ const MasterLayout = () => {
                     </NavLink>
 
                     <NavLink
+                        to="/colors"
+                        className="menu-item"
+                    >
+                        <Palette  size={18} />
+                        <span>Colors</span>
+                    </NavLink>
+                    <NavLink
                         to="/styles"
                         className="menu-item"
                     >
@@ -129,14 +136,6 @@ const MasterLayout = () => {
                     >
                         <Ruler size={18} />
                         <span>Sizes</span>
-                    </NavLink>
-
-                    <NavLink
-                        to="/colors"
-                        className="menu-item"
-                    >
-                        <Palette size={18} />
-                        <span>Colors</span>
                     </NavLink>
 
                     <NavLink
