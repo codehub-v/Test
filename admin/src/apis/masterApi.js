@@ -2,7 +2,7 @@ import api from "./base";
 
 // Color APIs
 export const getColors = (params = {}) => {
-    return api.get("/master/colors/", params);
+    return api.get("/master/colors/", {params});
 };
 
 export const createColor = (data) => {

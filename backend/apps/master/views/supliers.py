@@ -6,12 +6,14 @@ from apps.master.serializers import (
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class SupplierViewSet(ModelViewSet):
     queryset = Supplier.objects.all()
 
-    filter_backends = [SearchFilter]
+    filter_backends = [SearchFilter, DjangoFilterBackend]
+    filterset_fields = ["is_active"]
     search_fields = [
         "code",
         "name",
