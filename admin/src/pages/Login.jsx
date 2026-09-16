@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./Login.css";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const Login = () => {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,6 +42,7 @@ const Login = () => {
             );
             console.log(response.data);
             localStorage.setItem("token", response.data.token);
+            navigate("/")
 
         } catch (error) {
             console.log(error);

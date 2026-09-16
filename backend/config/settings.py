@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "rest_framework.authtoken",
+    "apps.base",
     "apps.users",
     "apps.master",
     "corsheaders"
@@ -129,6 +130,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
+    "DEFAULT_PAGINATION_CLASS": "apps.base.pagination.ListPagination",
 }
 
 AUTH_USER_MODEL = "users.User"
