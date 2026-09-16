@@ -9,6 +9,7 @@ class SizeReadSerializer(ModelSerializer):
             "uuid",
             "identity",
             "code",
+            "is_active"
         ]
 
 
@@ -18,4 +19,5 @@ class SizeWriteSerializer(ModelSerializer):
         fields = [
             "identity",
             "code",
+            "is_active"
         ]

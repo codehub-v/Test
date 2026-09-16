@@ -1,8 +1,8 @@
 import api from "./base";
 
 // Color APIs
-export const getColors = () => {
-    return api.get("/master/colors/");
+export const getColors = (params = {}) => {
+    return api.get("/master/colors/", params);
 };
 
 export const createColor = (data) => {
@@ -23,8 +23,8 @@ export const deleteColor = (id) => {
 
 
 // Customer APIs
-export const getCustomers = () => {
-    return api.get("/master/customers/");
+export const getCustomers = (params = {}) => {
+    return api.get("/master/customers/", {params});
 };
 
 export const createCustomer = (data) => {

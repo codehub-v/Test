@@ -9,6 +9,7 @@ class StyleReadSerializer(ModelSerializer):
             "uuid",
             "identity",
             "code",
+            "is_active"
         ]
 
 
@@ -18,4 +19,5 @@ class StyleWriteSerializer(ModelSerializer):
         fields = [
             "identity",
             "code",
+            "is_active"
         ]

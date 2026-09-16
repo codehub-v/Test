@@ -13,6 +13,7 @@ class CustomerReadSerializer(ModelSerializer):
             "street",
             "city",
             "pincode",
+            "is_active"
         ]
         
 class CustomerWriteSerializer(ModelSerializer):
@@ -25,4 +26,5 @@ class CustomerWriteSerializer(ModelSerializer):
             "street",
             "city",
             "pincode",
+            "is_active"
         ]

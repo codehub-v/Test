@@ -1,5 +1,31 @@
+
 import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+
+import {
+    LayoutDashboard,
+    Users,
+    Truck,
+    Shirt,
+    Layers,
+    Ruler,
+    Palette,
+    Scale,
+    Factory,
+    Boxes,
+    ShoppingCart,
+    Package,
+    ArrowDownUp,
+    Receipt,
+    ClipboardList,
+    Scissors,
+    Wrench,
+    CheckCircle,
+    PackageCheck,
+    BarChart3,
+    LogOut,
+} from "lucide-react";
+
 import "./MasterLayout.css";
 
 const MasterLayout = () => {
@@ -20,9 +46,11 @@ const MasterLayout = () => {
         <div className="erp-layout">
 
             {/* ================= SIDEBAR ================= */}
+
             <aside className="sidebar">
 
                 {/* Logo */}
+
                 <div className="sidebar-logo">
 
                     <div className="logo-box">
@@ -38,9 +66,11 @@ const MasterLayout = () => {
 
 
                 {/* Navigation */}
+
                 <nav className="sidebar-menu">
 
                     {/* MAIN */}
+
                     <div className="menu-section">
                         MAIN
                     </div>
@@ -50,12 +80,13 @@ const MasterLayout = () => {
                         end
                         className="menu-item"
                     >
-                        <span>▦</span>
-                        Dashboard
+                        <LayoutDashboard size={18} />
+                        <span>Dashboard</span>
                     </NavLink>
 
 
                     {/* MASTER DATA */}
+
                     <div className="menu-section">
                         MASTER DATA
                     </div>
@@ -64,76 +95,77 @@ const MasterLayout = () => {
                         to="/customers"
                         className="menu-item"
                     >
-                        <span>●</span>
-                        Customers
+                        <Users size={18} />
+                        <span>Customers</span>
                     </NavLink>
 
                     <NavLink
                         to="/suppliers"
                         className="menu-item"
                     >
-                        <span>●</span>
-                        Suppliers
+                        <Truck size={18} />
+                        <span>Suppliers</span>
                     </NavLink>
 
                     <NavLink
                         to="/styles"
                         className="menu-item"
                     >
-                        <span>◈</span>
-                        Styles
+                        <Shirt size={18} />
+                        <span>Styles</span>
                     </NavLink>
 
                     <NavLink
                         to="/fabrics"
                         className="menu-item"
                     >
-                        <span>▤</span>
-                        Fabrics
+                        <Layers size={18} />
+                        <span>Fabrics</span>
                     </NavLink>
 
                     <NavLink
                         to="/sizes"
                         className="menu-item"
                     >
-                        <span>◫</span>
-                        Sizes
+                        <Ruler size={18} />
+                        <span>Sizes</span>
                     </NavLink>
 
                     <NavLink
                         to="/colors"
                         className="menu-item"
                     >
-                        <span>●</span>
-                        Colors
+                        <Palette size={18} />
+                        <span>Colors</span>
                     </NavLink>
 
                     <NavLink
                         to="/units"
                         className="menu-item"
                     >
-                        <span>◫</span>
-                        Units
+                        <Scale size={18} />
+                        <span>Units</span>
                     </NavLink>
 
                     <NavLink
                         to="/production-lines"
                         className="menu-item"
                     >
-                        <span>▥</span>
-                        Production Lines
+                        <Factory size={18} />
+                        <span>Production Lines</span>
                     </NavLink>
 
                     <NavLink
                         to="/bom"
                         className="menu-item"
                     >
-                        <span>◈</span>
-                        BOM
+                        <Boxes size={18} />
+                        <span>BOM</span>
                     </NavLink>
 
 
                     {/* PURCHASE */}
+
                     <div className="menu-section">
                         PURCHASE
                     </div>
@@ -142,12 +174,13 @@ const MasterLayout = () => {
                         to="/purchase-orders"
                         className="menu-item"
                     >
-                        <span>▤</span>
-                        Purchase Orders
+                        <ShoppingCart size={18} />
+                        <span>Purchase Orders</span>
                     </NavLink>
 
 
                     {/* INVENTORY */}
+
                     <div className="menu-section">
                         INVENTORY
                     </div>
@@ -156,20 +189,21 @@ const MasterLayout = () => {
                         to="/stock"
                         className="menu-item"
                     >
-                        <span>▦</span>
-                        Stock
+                        <Package size={18} />
+                        <span>Stock</span>
                     </NavLink>
 
                     <NavLink
                         to="/stock-transactions"
                         className="menu-item"
                     >
-                        <span>↕</span>
-                        Stock Transactions
+                        <ArrowDownUp size={18} />
+                        <span>Stock Transactions</span>
                     </NavLink>
 
 
                     {/* SALES */}
+
                     <div className="menu-section">
                         SALES
                     </div>
@@ -178,12 +212,13 @@ const MasterLayout = () => {
                         to="/sales-orders"
                         className="menu-item"
                     >
-                        <span>▣</span>
-                        Sales Orders
+                        <Receipt size={18} />
+                        <span>Sales Orders</span>
                     </NavLink>
 
 
                     {/* PRODUCTION */}
+
                     <div className="menu-section">
                         PRODUCTION
                     </div>
@@ -192,44 +227,45 @@ const MasterLayout = () => {
                         to="/production-orders"
                         className="menu-item"
                     >
-                        <span>▥</span>
-                        Production Orders
+                        <ClipboardList size={18} />
+                        <span>Production Orders</span>
                     </NavLink>
 
                     <NavLink
                         to="/cutting"
                         className="menu-item"
                     >
-                        <span>✂</span>
-                        Cutting
+                        <Scissors size={18} />
+                        <span>Cutting</span>
                     </NavLink>
 
                     <NavLink
                         to="/sewing"
                         className="menu-item"
                     >
-                        <span>⚒</span>
-                        Sewing
+                        <Wrench size={18} />
+                        <span>Sewing</span>
                     </NavLink>
 
                     <NavLink
                         to="/quality"
                         className="menu-item"
                     >
-                        <span>✓</span>
-                        Quality
+                        <CheckCircle size={18} />
+                        <span>Quality</span>
                     </NavLink>
 
                     <NavLink
                         to="/finished-goods"
                         className="menu-item"
                     >
-                        <span>▤</span>
-                        Finished Goods
+                        <PackageCheck size={18} />
+                        <span>Finished Goods</span>
                     </NavLink>
 
 
                     {/* REPORTS */}
+
                     <div className="menu-section">
                         REPORTS
                     </div>
@@ -238,14 +274,15 @@ const MasterLayout = () => {
                         to="/reports"
                         className="menu-item"
                     >
-                        <span>▥</span>
-                        Reports
+                        <BarChart3 size={18} />
+                        <span>Reports</span>
                     </NavLink>
 
                 </nav>
 
 
                 {/* ================= USER ================= */}
+
                 <div className="sidebar-user">
 
                     <div className="user-avatar">
@@ -271,7 +308,7 @@ const MasterLayout = () => {
                         onClick={handleLogout}
                         title="Logout"
                     >
-                        ↪
+                        <LogOut size={18} />
                     </button>
 
                 </div>
@@ -280,6 +317,7 @@ const MasterLayout = () => {
 
 
             {/* ================= MAIN ================= */}
+
             <main className="main-content">
 
                 <header className="topbar">

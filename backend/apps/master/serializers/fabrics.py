@@ -9,6 +9,7 @@ class FabricReadSerializer(ModelSerializer):
             "uuid",
             "identity",
             "code",
+            "is_active"
         ]
 
 
@@ -18,4 +19,5 @@ class FabricWriteSerializer(ModelSerializer):
         fields = [
             "identity",
             "code",
+            "is_active"
         ]

@@ -9,6 +9,7 @@ class UnitReadSerializer(ModelSerializer):
             "uuid",
             "identity",
             "code",
+            "is_active"
         ]
 
 
@@ -18,4 +19,5 @@ class UnitWriteSerializer(ModelSerializer):
         fields = [
             "identity",
             "code",
+            "is_active"
         ]

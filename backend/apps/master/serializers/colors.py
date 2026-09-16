@@ -9,6 +9,7 @@ class ColorReadSerializer(ModelSerializer):
             "uuid",
             "identity",
             "code",
+            "is_active"
         ]
 
 
@@ -18,4 +19,5 @@ class ColorWriteSerializer(ModelSerializer):
         fields = [
             "identity",
             "code",
+            "is_active"
         ]
