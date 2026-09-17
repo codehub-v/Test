@@ -4,10 +4,10 @@ from django.db import models
 
 class Customer(BaseModel):
     identity = models.CharField(max_length=512)
-    email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15)
+    email = models.EmailField(null=True, blank=True)
+    phone = models.CharField(max_length=10)
 
-    street = models.CharField(max_length=512, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     pincode = models.CharField(max_length=10, null=True, blank=True)
 

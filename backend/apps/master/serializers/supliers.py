@@ -10,7 +10,7 @@ class SupplierReadSerializer(ModelSerializer):
             "identity",
             "email",
             "phone",
-            "street",
+            "address",
             "city",
             "pincode",
             "is_active"
@@ -23,7 +23,7 @@ class SupplierWriteSerializer(ModelSerializer):
             "identity",
             "email",
             "phone",
-            "street",
+            "address",
             "city",
             "pincode",
             "is_active"

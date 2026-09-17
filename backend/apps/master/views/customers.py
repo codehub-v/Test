@@ -15,7 +15,7 @@ class CustomerViewSet(ModelViewSet):
     filter_backends = [SearchFilter, DjangoFilterBackend]
     filterset_fields = ["is_active"]
     search_fields = [
-        "code",
+
         "name",
         "email",
         "phone",

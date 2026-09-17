@@ -10,7 +10,7 @@ class CustomerReadSerializer(ModelSerializer):
             "identity",
             "email",
             "phone",
-            "street",
+            "address",
             "city",
             "pincode",
             "is_active"
@@ -23,7 +23,7 @@ class CustomerWriteSerializer(ModelSerializer):
             "identity",
             "email",
             "phone",
-            "street",
+            "address",
             "city",
             "pincode",
             "is_active"

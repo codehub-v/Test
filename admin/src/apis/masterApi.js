@@ -45,8 +45,8 @@ export const deleteCustomer = (id) => {
 
 
 // Supplier APIs
-export const getSuppliers = () => {
-    return api.get("/master/suppliers/");
+export const getSuppliers = (params={}) => {
+    return api.get("/master/suppliers/", {params});
 };
 
 export const createSupplier = (data) => {
@@ -67,8 +67,8 @@ export const deleteSupplier = (id) => {
 
 
 // Style APIs
-export const getStyles = () => {
-    return api.get("/master/styles/");
+export const getStyles = (params={}) => {
+    return api.get("/master/styles/", {params});
 };
 
 export const createStyle = (data) => {
@@ -89,8 +89,8 @@ export const deleteStyle = (id) => {
 
 
 // Size APIs
-export const getSizes = () => {
-    return api.get("/master/sizes/");
+export const getSizes = (params={}) => {
+    return api.get("/master/sizes/", {params});
 };
 
 export const createSize = (data) => {
@@ -111,8 +111,8 @@ export const deleteSize = (id) => {
 
 
 // Fabric APIs
-export const getFabrics = () => {
-    return api.get("/master/fabrics/");
+export const getFabrics = (params={}) => {
+    return api.get("/master/fabrics/", {params});
 };
 
 export const createFabric = (data) => {
@@ -133,8 +133,8 @@ export const deleteFabric = (id) => {
 
 
 // Unit APIs
-export const getUnits = () => {
-    return api.get("/master/units/");
+export const getUnits = (params={}) => {
+    return api.get("/master/units/", {params});
 };
 
 export const createUnit = (data) => {

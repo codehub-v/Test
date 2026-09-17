@@ -8,7 +8,7 @@ class Supplier(BaseModel):
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)
 
-    street = models.CharField(max_length=512, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
     city = models.CharField(max_length=100, null=True, blank=True)
     pincode = models.CharField(max_length=10, null=True, blank=True)
 
