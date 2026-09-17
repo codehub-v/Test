@@ -132,6 +132,8 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
     ],
     "DEFAULT_PAGINATION_CLASS": "apps.base.pagination.ListPagination",
+
+    "EXCEPTION_HANDLER": "apps.base.middleware.custom_exception_handler",
 }
 
 AUTH_USER_MODEL = "users.User"

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { X, Palette, Check } from "lucide-react";
 
@@ -16,6 +15,14 @@ const ColorModal = ({
 
     const [loading, setLoading] = useState(false);
 
+    const [errors, setErrors] = useState({
+        identity: "",
+        code: "",
+    });
+
+    const [serverError, setServerError] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
+
     useEffect(() => {
         if (editingColor) {
             setFormData({
@@ -30,6 +37,14 @@ const ColorModal = ({
                 is_active: true,
             });
         }
+
+        setErrors({
+            identity: "",
+            code: "",
+        });
+
+        setServerError("");
+        setSuccessMessage("");
     }, [editingColor, isOpen]);
 
     if (!isOpen) {
@@ -43,16 +58,163 @@ const ColorModal = ({
             ...prev,
             [name]: type === "checkbox" ? checked : value,
         }));
+
+        if (name === "identity" || name === "code") {
+            setErrors((prev) => ({
+                ...prev,
+                [name]: "",
+            }));
+        }
+
+        setServerError("");
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        setErrors({
+            identity: "",
+            code: "",
+        });
+
+        setServerError("");
+        setSuccessMessage("");
+
+
+        const newErrors = {
+            identity: "",
+            code: "",
+        };
+
+        if (!formData.identity.trim()) {
+            newErrors.identity = "Please enter a color name.";
+        }
+
+        if (!formData.code.trim()) {
+            newErrors.code = "Please enter a color code.";
+        }
+
+        if (newErrors.identity || newErrors.code) {
+            setErrors(newErrors);
+            return;
+        }
+
         setLoading(true);
 
         try {
-            await onSubmit(formData);
-            onClose();
+
+            const response = await onSubmit({
+                ...formData,
+                identity: formData.identity.trim(),
+                code: formData.code.trim(),
+            });
+
+            console.log("SUCCESS RESPONSE:", response);
+
+            setSuccessMessage(
+                response?.message ||
+                    (
+                        editingColor
+                            ? "Color updated successfully."
+                            : "Color created successfully."
+                    )
+            );
+
+            // Close only after successful response
+            setTimeout(() => {
+                onClose();
+            }, 1000);
+
+        } catch (error) {
+
+            console.log("API ERROR:", error);
+            console.log(
+                "API ERROR DATA:",
+                error
+            );
+
+            const data = error;
+
+            // No response from server
+            if (!data) {
+                setServerError(
+                    "Unable to connect to the server. Please try again."
+                );
+                return;
+            }
+
+            // ==========================================
+            // DUPLICATE ENTRY
+            // ==========================================
+
+            if (data.code === "DUPLICATE_ENTRY") {
+
+                if (data.field === "identity") {
+                    setErrors((prev) => ({
+                        ...prev,
+                        identity:
+                            data.error ||
+                            "Color name already exists.",
+                    }));
+                }
+
+                if (data.field === "code") {
+                    setErrors((prev) => ({
+                        ...prev,
+                        code:
+                            data.error ||
+                            "Color code already exists.",
+                    }));
+                }
+
+                return;
+            }
+
+            // ==========================================
+            // NORMAL DRF FIELD ERRORS
+            // ==========================================
+
+            if (data.identity) {
+                setErrors((prev) => ({
+                    ...prev,
+                    identity: Array.isArray(data.identity)
+                        ? data.identity[0]
+                        : data.identity,
+                }));
+            }
+
+            if (data.code) {
+                setErrors((prev) => ({
+                    ...prev,
+                    code: Array.isArray(data.code)
+                        ? data.code[0]
+                        : data.code,
+                }));
+            }
+
+            // ==========================================
+            // GENERAL SERVER ERROR
+            // ==========================================
+
+            if (
+                data.error &&
+                !data.identity &&
+                !data.code
+            ) {
+                setServerError(data.error);
+            } else if (
+                data.detail &&
+                !data.identity &&
+                !data.code
+            ) {
+                setServerError(data.detail);
+            } else if (
+                data.message &&
+                !data.identity &&
+                !data.code
+            ) {
+                setServerError(data.message);
+            }
         } finally {
             setLoading(false);
         }
@@ -71,7 +233,9 @@ const ColorModal = ({
 
                         <div>
                             <h2 style={styles.title}>
-                                {editingColor ? "Edit Color" : "Add Color"}
+                                {editingColor
+                                    ? "Edit Color"
+                                    : "Add Color"}
                             </h2>
 
                             <p style={styles.subtitle}>
@@ -86,6 +250,7 @@ const ColorModal = ({
                         type="button"
                         onClick={onClose}
                         style={styles.closeButton}
+                        disabled={loading}
                     >
                         <X size={19} />
                     </button>
@@ -96,11 +261,53 @@ const ColorModal = ({
 
                     <div style={styles.form}>
 
+                        {/* ================================= */}
+                        {/* SUCCESS MESSAGE */}
+                        {/* ================================= */}
+
+                        {successMessage && (
+                            <div
+                                style={{
+                                    marginBottom: "18px",
+                                    padding: "10px 12px",
+                                    borderRadius: "8px",
+                                    backgroundColor: "#ecfdf5",
+                                    border: "1px solid #a7f3d0",
+                                    color: "#047857",
+                                    fontSize: "13px",
+                                }}
+                            >
+                                {successMessage}
+                            </div>
+                        )}
+
+                        {/* ================================= */}
+                        {/* GENERAL SERVER ERROR */}
+                        {/* ================================= */}
+
+                        {serverError && (
+                            <div
+                                style={{
+                                    marginBottom: "18px",
+                                    padding: "10px 12px",
+                                    borderRadius: "8px",
+                                    backgroundColor: "#fef2f2",
+                                    border: "1px solid #fecaca",
+                                    color: "#b91c1c",
+                                    fontSize: "13px",
+                                }}
+                            >
+                                {serverError}
+                            </div>
+                        )}
+
                         {/* Color Name */}
                         <div style={styles.formGroup}>
                             <label style={styles.label}>
                                 Color Name
-                                <span style={styles.required}>*</span>
+                                <span style={styles.required}>
+                                    *
+                                </span>
                             </label>
 
                             <input
@@ -109,16 +316,37 @@ const ColorModal = ({
                                 value={formData.identity}
                                 onChange={handleChange}
                                 placeholder="e.g. Red, Navy Blue"
-                                required
-                                style={styles.input}
+                                style={{
+                                    ...styles.input,
+                                    ...(errors.identity
+                                        ? {
+                                              borderColor:
+                                                  "#ef4444",
+                                          }
+                                        : {}),
+                                }}
                             />
+
+                            {errors.identity && (
+                                <div
+                                    style={{
+                                        marginTop: "5px",
+                                        fontSize: "12px",
+                                        color: "#ef4444",
+                                    }}
+                                >
+                                    {errors.identity}
+                                </div>
+                            )}
                         </div>
 
                         {/* Color Code */}
                         <div style={styles.formGroup}>
                             <label style={styles.label}>
                                 Color Code
-                                <span style={styles.required}>*</span>
+                                <span style={styles.required}>
+                                    *
+                                </span>
                             </label>
 
                             <input
@@ -127,9 +355,28 @@ const ColorModal = ({
                                 value={formData.code}
                                 onChange={handleChange}
                                 placeholder="e.g. RED001"
-                                required
-                                style={styles.input}
+                                style={{
+                                    ...styles.input,
+                                    ...(errors.code
+                                        ? {
+                                              borderColor:
+                                                  "#ef4444",
+                                          }
+                                        : {}),
+                                }}
                             />
+
+                            {errors.code && (
+                                <div
+                                    style={{
+                                        marginTop: "5px",
+                                        fontSize: "12px",
+                                        color: "#ef4444",
+                                    }}
+                                >
+                                    {errors.code}
+                                </div>
+                            )}
                         </div>
 
                         {/* Status */}
@@ -139,7 +386,11 @@ const ColorModal = ({
                                     Status
                                 </div>
 
-                                <div style={styles.statusDescription}>
+                                <div
+                                    style={
+                                        styles.statusDescription
+                                    }
+                                >
                                     {formData.is_active
                                         ? "This color is currently active"
                                         : "This color is currently inactive"}
@@ -153,26 +404,32 @@ const ColorModal = ({
                                     checked={formData.is_active}
                                     onChange={handleChange}
                                     style={styles.hiddenCheckbox}
+                                    disabled={loading}
                                 />
 
                                 <span
                                     style={{
                                         ...styles.slider,
-                                        backgroundColor: formData.is_active
-                                            ? "#4f46e5"
-                                            : "#cbd5e1",
+                                        backgroundColor:
+                                            formData.is_active
+                                                ? "#4f46e5"
+                                                : "#cbd5e1",
                                     }}
                                 >
                                     <span
                                         style={{
                                             ...styles.sliderCircle,
-                                            transform: formData.is_active
-                                                ? "translateX(20px)"
-                                                : "translateX(0)",
+                                            transform:
+                                                formData.is_active
+                                                    ? "translateX(20px)"
+                                                    : "translateX(0)",
                                         }}
                                     >
                                         {formData.is_active && (
-                                            <Check size={11} color="#4f46e5" />
+                                            <Check
+                                                size={11}
+                                                color="#4f46e5"
+                                            />
                                         )}
                                     </span>
                                 </span>
@@ -188,6 +445,7 @@ const ColorModal = ({
                             type="button"
                             onClick={onClose}
                             style={styles.cancelButton}
+                            disabled={loading}
                         >
                             Cancel
                         </button>

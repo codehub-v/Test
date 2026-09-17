@@ -16,7 +16,7 @@ class CustomerViewSet(ModelViewSet):
     filterset_fields = ["is_active"]
     search_fields = [
 
-        "name",
+        "identity",
         "email",
         "phone",
     ]
