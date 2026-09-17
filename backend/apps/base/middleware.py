@@ -56,6 +56,15 @@ def custom_exception_handler(exc, context):
                 "field": "code",
                 "message": "Style code already exists.",
             },
+            "unique_season_identity_case_insensitive": {
+                "field": "identity",
+                "message": "Season name already exists.",
+            },
+
+            "unique_season_code_case_insensitive": {
+                "field": "code",
+                "message": "Season code already exists.",
+            },
         }
 
         for constraint, details in messages.items():

@@ -1,35 +1,27 @@
 import React, { useEffect, useState } from "react";
 
 import {
-    getSizes,
-    createSize,
-    updateSize,
+    getSeasons,
+    createSeason,
+    updateSeason,
 } from "../../../apis/masterApi";
+
 import MasterList from "../../../components/MasterList";
 import MasterModal from "../../../components/MasterModal";
 
-const SizeList = () => {
-
+const SeasonList = () => {
     const [data, setData] = useState([]);
-
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("");
-
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-
     const [loading, setLoading] = useState(false);
 
     const [showModal, setShowModal] = useState(false);
-    const [editingSize, setEditingSize] = useState(null);
+    const [editingSeason, setEditingSeason] = useState(null);
 
-
-    /* ================= FETCH SIZES ================= */
-
-    const fetchSizes = async () => {
-
+    const fetchSeasons = async () => {
         try {
-
             setLoading(true);
 
             const params = {
@@ -44,103 +36,54 @@ const SizeList = () => {
                 params.is_active = status;
             }
 
-            const response =
-                await getSizes(params);
+            const response = await getSeasons(params);
 
-            setData(
-                response.data.results || []
-            );
+            setData(response.data.results || []);
 
             setTotalPages(
-                Math.ceil(
-                    (response.data.count || 0) / 10
-                )
+                Math.ceil((response.data.count || 0) / 10)
             );
-
         } catch (error) {
-
-            console.error(
-                "Error fetching sizes:",
-                error
-            );
-
+            console.error("Error fetching seasons:", error);
         } finally {
-
             setLoading(false);
-
         }
     };
 
-
-    /* ================= LOAD ================= */
-
     useEffect(() => {
-
-        fetchSizes();
-
-    }, [
-        currentPage,
-        search,
-        status,
-    ]);
-
-
-    /* ================= ADD ================= */
+        fetchSeasons();
+    }, [currentPage, search, status]);
 
     const handleAdd = () => {
-
-        setEditingSize(null);
+        setEditingSeason(null);
         setShowModal(true);
-
     };
 
-
-    /* ================= EDIT ================= */
-
-    const handleEdit = (size) => {
-
-        setEditingSize(size);
+    const handleEdit = (season) => {
+        setEditingSeason(season);
         setShowModal(true);
-
     };
-
-
-    /* ================= CLOSE ================= */
 
     const handleCloseModal = () => {
-
         setShowModal(false);
-        setEditingSize(null);
-
+        setEditingSeason(null);
     };
-
 
     return (
         <>
-
             <MasterList
-
-                title="Sizes"
-
-                subtitle="Manage size master data"
-
-                searchPlaceholder="Search sizes..."
-
+                title="Seasons"
+                subtitle="Manage season master data"
+                searchPlaceholder="Search seasons..."
                 data={data}
-
                 search={search}
                 setSearch={setSearch}
-
                 status={status}
                 setStatus={setStatus}
-
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
-
                 totalPages={totalPages}
-
                 loading={loading}
-
                 columns={[
                     {
                         key: "code",
@@ -148,46 +91,28 @@ const SizeList = () => {
                     },
                     {
                         key: "identity",
-                        label: "Size",
+                        label: "Season",
                     },
                 ]}
-
                 onAdd={handleAdd}
-
                 onEdit={handleEdit}
-
             />
-
 
             <MasterModal
-
                 isOpen={showModal}
-
                 onClose={handleCloseModal}
-
-                onSuccess={fetchSizes}
-
-                title="Size"
-
-                identityLabel="Size Name"
-
-                identityPlaceholder="e.g. Small, Medium, Large"
-
-                codeLabel="Size Code"
-
-                codePlaceholder="e.g. S, M, L"
-
-                editingItem={editingSize}
-
-                create={createSize}
-
-                update={updateSize}
-
+                onSuccess={fetchSeasons}
+                title="Season"
+                identityLabel="Season Name"
+                identityPlaceholder="Enter season name"
+                codeLabel="Season Code"
+                codePlaceholder="Enter season code"
+                editingItem={editingSeason}
+                create={createSeason}
+                update={updateSeason}
             />
-
         </>
     );
 };
 
-
-export default SizeList;
+export default SeasonList;

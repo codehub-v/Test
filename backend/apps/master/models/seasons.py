@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models.functions import Lower
 
 
-class Unit(BaseModel):
+class Season(BaseModel):
 
     identity = models.CharField(max_length=255)
     code = models.CharField(max_length=255)
@@ -12,11 +12,11 @@ class Unit(BaseModel):
         constraints = [
             models.UniqueConstraint(
                 Lower("identity"),
-                name="unique_unit_identity_case_insensitive",
+                name="unique_season_identity_case_insensitive",
             ),
             models.UniqueConstraint(
                 Lower("code"),
-                name="unique_unit_code_case_insensitive",
+                name="unique_season_code_case_insensitive",
             ),
         ]
 

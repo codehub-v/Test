@@ -28,6 +28,8 @@ import SuppliersDetails from "./pages/Masters/Suppliers/SuppliersDetails";
 import FabricList from "./pages/Masters/Fabrics/FabricList";
 import StyleList from "./pages/Masters/Styles/StyleList";
 import SizeList from "./pages/Masters/Sizes/SizeList";
+import SeasonList from "./pages/Masters/Season/SeasonList";
+import UnitList from "./pages/Masters/Unit/UnitList";
 
 
 function App() {
@@ -138,6 +140,14 @@ function App() {
                         <Route
                             path="fabrics/"
                             element={<FabricList/>}
+                        />
+                        <Route
+                            path="seasons/"
+                            element={<SeasonList/>}
+                        />
+                        <Route
+                            path="units/"
+                            element={<UnitList/>}
                         />
 
 

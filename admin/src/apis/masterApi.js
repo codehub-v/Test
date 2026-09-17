@@ -132,6 +132,27 @@ export const deleteFabric = (id) => {
 };
 
 
+// Season APIs
+export const getSeasons = (params={}) => {
+    return api.get("/master/seasons/", {params});
+};
+
+export const createSeason = (data) => {
+    return api.post("/master/seasons/", data);
+};
+
+export const updateSeason = (id, data) => {
+    return api.put(`/master/seasons/${id}/`, data);
+};
+
+export const patchSeason = (id, data) => {
+    return api.patch(`/master/seasons/${id}/`, data);
+};
+
+export const deleteSeason = (id) => {
+    return api.delete(`/master/seasons/${id}/`);
+};
+
 // Unit APIs
 export const getUnits = (params={}) => {
     return api.get("/master/units/", {params});

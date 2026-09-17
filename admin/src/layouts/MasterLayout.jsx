@@ -147,11 +147,11 @@ const MasterLayout = () => {
                     </NavLink>
 
                     <NavLink
-                        to="/production-lines"
+                        to="/seasons"
                         className="menu-item"
                     >
                         <Factory size={18} />
-                        <span>Production Lines</span>
+                        <span>Seasons</span>
                     </NavLink>
 
                     <NavLink

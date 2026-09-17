@@ -5,3 +5,4 @@ from .size import Size
 from .styles import Style
 from .supliers import Supplier
 from .units import Unit
+from .seasons import Season
