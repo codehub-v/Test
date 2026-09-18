@@ -5,6 +5,7 @@ from apps.stocks.views import (
     InventoryItemMeta,
     StockItemViewSet,
     StockTransactionViewSet,
+    SupplyOrderViewSet
 )
 
 router = DefaultRouter()
@@ -25,6 +26,11 @@ router.register(
     "stock-logs",
     StockTransactionViewSet,
     basename="stock-log"
+)
+router.register(
+    "supplies",
+    SupplyOrderViewSet,
+    basename="supplies"
 )
 
 # Meta
