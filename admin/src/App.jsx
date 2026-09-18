@@ -31,6 +31,8 @@ import ItemList from "./pages/Inventory/Items/ItemList";
 import ItemForm from "./pages/Inventory/Items/ItemForm";
 import ItemDetials from "./pages/Inventory/Items/ItemDetials";
 import StockList from "./pages/Inventory/Stocks/StockList";
+import StockLogList from "./pages/Inventory/StockLog/StockLogList";
+import StockLogForm from "./pages/Inventory/StockLog/StockLogForm";
 
 function App() {
     return (
@@ -74,7 +76,10 @@ function App() {
                         <Route path="items/details/:id" element={<ItemDetials />} />
 
 
-                        <Route path="stock" element={<StockList />} />
+                        <Route path="stock" element={<StockList />} /> 
+                        
+                        <Route path="stock-log" element={<StockLogList />} /> 
+                        <Route path="stock-log/add" element={<StockLogForm />} /> 
 
 
                     </Route>

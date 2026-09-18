@@ -74,6 +74,10 @@ def custom_exception_handler(exc, context):
                 "field": "code",
                 "message": "Accessory code already exists.",
             },
+            "stock_transaction_in_or_out": {
+                "field": "transaction_in",
+                "message": "Enter either stock in or stock out quantity.",
+            },
         }
 
         for constraint, details in messages.items():

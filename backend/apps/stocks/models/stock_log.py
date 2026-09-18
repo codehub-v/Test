@@ -3,13 +3,7 @@ from apps.stocks.models import InventoryItem
 from apps.base.models import BaseModel
 
 
-
 class StockTransaction(BaseModel):
-
-    TRANSACTION_TYPES = (
-        ("IN", "Stock In"),
-        ("OUT", "Stock Out"),
-    )
 
     item = models.ForeignKey(
         InventoryItem,
@@ -17,34 +11,49 @@ class StockTransaction(BaseModel):
         related_name="stock_transactions"
     )
 
-    transaction_type = models.CharField(
-        max_length=3,
-        choices=TRANSACTION_TYPES
+    transaction_date = models.DateTimeField(
+        auto_now_add=True
     )
 
-    quantity = models.DecimalField(
+    transaction_in = models.DecimalField(
+        default=0,
         max_digits=12,
         decimal_places=2
     )
 
-    reference_type = models.CharField(
-        max_length=50,
-        blank=True,
-        null=True
+    transaction_out = models.DecimalField(
+        default=0,
+        max_digits=12,
+        decimal_places=2
     )
 
-    reference_id = models.PositiveIntegerField(
-        blank=True,
-        null=True
-    )
-
-    transaction_date = models.DateTimeField(
-        auto_now_add=True
+    quantity = models.DecimalField(
+        default=0,
+        max_digits=12,
+        decimal_places=2
     )
 
     notes = models.TextField(
         blank=True
     )
 
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=(
+                    models.Q(
+                        transaction_in__gt=0,
+                        transaction_out=0
+                    )
+                    |
+                    models.Q(
+                        transaction_in=0,
+                        transaction_out__gt=0
+                    )
+                ),
+                name="stock_transaction_in_or_out",
+            )
+        ]
+
     def __str__(self):
-        return f"{self.item.code} - {self.transaction_type} - {self.quantity}"
+        return f"{self.item.code} - {self.quantity}"

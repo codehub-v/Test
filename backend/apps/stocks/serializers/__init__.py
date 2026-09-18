@@ -1,2 +1,3 @@
 from .inventory_item import InventoryItemReadSerializer, InventoryItemWriteSerializer, InventoryItemRetrieveSerializer, InventoryItemMetaSerializer
 from .stock_item import StockItemReadSerializer, StockItemWriteSerializer
+from .stock_log import StockTransactionReadSerializer, StockTransactionWriteSerializer

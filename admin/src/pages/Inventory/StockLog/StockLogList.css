@@ -1,0 +1,308 @@
+.stock-log-page {
+  background: #f8fafc;
+  min-height: 100vh;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+/* =========================
+   Header
+========================= */
+
+.stock-log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.stock-log-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 650;
+  color: #0f172a;
+}
+
+.stock-log-header p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* =========================
+   Error
+========================= */
+
+.stock-log-error {
+  padding: 13px 15px;
+  margin-bottom: 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 14px;
+}
+
+/* =========================
+   Filters
+========================= */
+
+.stock-log-filter-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 18px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.stock-log-search-wrapper {
+  flex: 1;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #94a3b8;
+}
+
+.stock-log-search-wrapper input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #334155;
+}
+
+.stock-log-search-wrapper input::placeholder {
+  color: #94a3b8;
+}
+
+.stock-log-filter-select {
+  height: 40px;
+}
+
+.stock-log-filter-select select {
+  height: 100%;
+  min-width: 150px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+}
+
+.stock-log-reset-button {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.stock-log-reset-button:hover {
+  background: #f8fafc;
+}
+
+/* =========================
+   Table
+========================= */
+
+.stock-log-table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow:
+    0 1px 3px rgba(15, 23, 42, 0.04);
+  overflow: hidden;
+}
+
+.stock-log-table-wrapper {
+  overflow-x: auto;
+}
+
+.stock-log-table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.stock-log-table-wrapper th {
+  padding: 13px 18px;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.stock-log-table-wrapper td {
+  padding: 15px 18px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.stock-log-table-wrapper tbody tr:hover {
+  background: #fafbff;
+}
+
+/* =========================
+   Item
+========================= */
+
+.stock-log-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.stock-log-item-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+.stock-log-item strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* =========================
+   IN / OUT
+========================= */
+
+.stock-in-value,
+.stock-out-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.stock-in-value {
+  color: #16a34a;
+}
+
+.stock-out-value {
+  color: #dc2626;
+}
+
+.stock-zero {
+  color: #94a3b8;
+}
+
+/* =========================
+   Remaining
+========================= */
+
+.remaining-value {
+  font-weight: 650;
+  color: #334155;
+}
+
+/* =========================
+   Notes
+========================= */
+
+.stock-log-notes {
+  display: block;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #64748b;
+}
+
+/* =========================
+   Date
+========================= */
+
+.stock-log-date {
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* =========================
+   Empty
+========================= */
+
+.stock-log-empty {
+  padding: 50px 20px !important;
+  text-align: center !important;
+  color: #94a3b8 !important;
+  font-size: 14px !important;
+}
+
+/* =========================
+   Footer
+========================= */
+
+.stock-log-table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 18px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.stock-log-table-footer strong {
+  color: #334155;
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 700px) {
+  .stock-log-filter-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stock-log-search-wrapper {
+    width: auto;
+  }
+
+  .stock-log-filter-select select {
+    width: 100%;
+  }
+
+  .stock-log-reset-button {
+    justify-content: center;
+  }
+
+  .stock-log-table-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
