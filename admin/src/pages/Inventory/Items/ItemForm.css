@@ -1,0 +1,650 @@
+.item-form-page {
+    background: #f8fafc;
+    min-height: 100vh;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+
+/* =========================
+   Header
+========================= */
+
+.item-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.item-form-title-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.item-form-title-section h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 650;
+    color: #0f172a;
+}
+
+.item-form-title-section p {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: #64748b;
+}
+
+
+/* =========================
+   Back Button
+========================= */
+
+.back-button {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #475569;
+
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================
+   Form Card
+========================= */
+
+.item-form-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+
+    box-shadow:
+        0 1px 3px rgba(15, 23, 42, 0.04);
+
+    overflow: hidden;
+}
+
+
+/* =========================
+   Form Section
+========================= */
+
+.form-section {
+    padding: 24px;
+}
+
+.section-header {
+    margin-bottom: 22px;
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.section-header span {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+
+/* =========================
+   Form Grid
+========================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.form-group label span {
+    color: #dc2626;
+}
+
+
+/* =========================
+   Inputs & Selects
+========================= */
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+    width: 100%;
+    height: 40px;
+    box-sizing: border-box;
+
+    padding: 0 12px;
+
+    border: 1px solid #dbe1ea;
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #ffffff;
+    color: #334155;
+
+    font-size: 14px;
+}
+
+.form-group select {
+    cursor: pointer;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus,
+.form-group select:focus {
+    border-color: #6366f1;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.08);
+}
+
+.form-group input:disabled,
+.form-group select:disabled {
+    background: #f8fafc;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+.form-group small {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+
+/* =========================
+   Full Width Field
+========================= */
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================
+   Status Toggle
+========================= */
+
+.status-toggle-wrapper {
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.toggle-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #475569;
+}
+
+
+/* Toggle Container */
+
+.switch {
+    position: relative;
+
+    display: inline-block;
+
+    width: 42px;
+    height: 24px;
+
+    margin: 0;
+}
+
+
+/* Hide native checkbox */
+
+.switch input {
+    position: absolute;
+
+    opacity: 0;
+
+    width: 0;
+    height: 0;
+}
+
+
+/* Slider */
+
+.slider {
+    position: absolute;
+
+    inset: 0;
+
+    background-color: #cbd5e1;
+
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    transition: background-color 0.2s ease;
+}
+
+
+/* Slider Circle */
+
+.slider::before {
+    content: "";
+
+    position: absolute;
+
+    width: 18px;
+    height: 18px;
+
+    left: 3px;
+    top: 3px;
+
+    background: #ffffff;
+
+    border-radius: 50%;
+
+    transition: transform 0.2s ease;
+
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Active */
+
+.switch input:checked + .slider {
+    background-color: #4f46e5;
+}
+
+.switch input:checked + .slider::before {
+    transform: translateX(18px);
+}
+
+
+/* Disabled */
+
+.switch input:disabled + .slider {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   Fabric / Accessory Radio
+========================= */
+
+.radio-group {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.radio-card {
+    position: relative;
+
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    min-height: 62px;
+
+    box-sizing: border-box;
+
+    padding: 10px 14px;
+
+    border: 1px solid #dbe1ea;
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.15s ease,
+        background-color 0.15s ease;
+}
+
+.radio-card:hover {
+    border-color: #a5b4fc;
+    background: #f8fafc;
+}
+
+
+/* Selected */
+
+.radio-card.selected {
+    border-color: #6366f1;
+    background: #eef2ff;
+}
+
+
+/* Disabled */
+
+.radio-card.disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.radio-card.disabled:hover {
+    border-color: #dbe1ea;
+    background: #ffffff;
+}
+
+
+/* Hide native radio */
+
+.radio-card input {
+    position: absolute;
+
+    opacity: 0;
+
+    width: 0;
+    height: 0;
+
+    pointer-events: none;
+}
+
+
+/* Custom Radio Circle */
+
+.radio-circle {
+    width: 17px;
+    height: 17px;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
+
+    border: 2px solid #cbd5e1;
+
+    border-radius: 50%;
+
+    position: relative;
+}
+
+.radio-card.selected .radio-circle {
+    border-color: #4f46e5;
+}
+
+
+/* Inner Circle */
+
+.radio-card.selected .radio-circle::after {
+    content: "";
+
+    position: absolute;
+
+    width: 9px;
+    height: 9px;
+
+    top: 2px;
+    left: 2px;
+
+    border-radius: 50%;
+
+    background: #4f46e5;
+}
+
+
+/* Radio Text */
+
+.radio-card strong {
+    display: block;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #334155;
+}
+
+.radio-card small {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 12px;
+
+    color: #94a3b8;
+}
+
+
+/* =========================
+   Information
+========================= */
+
+.form-info {
+    margin: 0 24px 24px;
+
+    padding: 14px 16px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 8px;
+}
+
+.form-info strong {
+    display: block;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    color: #475569;
+}
+
+.form-info p {
+    margin: 5px 0 0;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    color: #64748b;
+}
+
+
+/* =========================
+   Footer
+========================= */
+
+.form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    padding: 16px 24px;
+
+    border-top: 1px solid #e2e8f0;
+
+    background: #ffffff;
+}
+
+
+/* =========================
+   Cancel Button
+========================= */
+
+.cancel-button {
+    height: 40px;
+
+    padding: 0 16px;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #64748b;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.cancel-button:hover {
+    background: #f8fafc;
+}
+
+.cancel-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   Save Button
+========================= */
+
+.save-button {
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 0 17px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #4f46e5;
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background: #4338ca;
+}
+
+.save-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 700px) {
+
+    .item-form-header {
+        align-items: flex-start;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .radio-group {
+        flex-direction: column;
+    }
+
+    .form-section {
+        padding: 18px;
+    }
+
+    .form-info {
+        margin: 0 18px 18px;
+    }
+
+    .form-footer {
+        padding: 14px 18px;
+    }
+
+}
+
+
+/* =========================
+   Form Alerts
+========================= */
+
+.form-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    padding: 12px 14px;
+    margin-bottom: 16px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.form-alert svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+
+/* Success */
+
+.success-alert {
+    background: #ecfdf3;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+}
+
+
+/* Error */
+
+.error-alert {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}

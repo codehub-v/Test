@@ -1,0 +1,374 @@
+.item-details-page {
+    background: #f8fafc;
+    min-height: 100vh;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+
+/* =========================
+   Header
+========================= */
+
+.item-details-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.item-details-title-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.item-details-title-section h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 650;
+    color: #0f172a;
+}
+
+.item-details-title-section p {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: #64748b;
+}
+
+
+/* =========================
+   Back Button
+========================= */
+
+.back-button {
+    height: 38px;
+    padding: 0 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #475569;
+
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.item-details-title-section .back-button {
+    width: 38px;
+    padding: 0;
+}
+
+.back-button:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================
+   Edit Button
+========================= */
+
+.detail-edit-button {
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 0 16px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #4f46e5;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.detail-edit-button:hover {
+    background: #4338ca;
+}
+
+
+/* =========================
+   Card
+========================= */
+
+.details-card {
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+
+    box-shadow:
+        0 1px 3px rgba(15, 23, 42, 0.04);
+
+    overflow: hidden;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================
+   Card Header
+========================= */
+
+.details-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 22px 24px;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.item-code-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.item-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #eef2ff;
+    color: #4f46e5;
+}
+
+.item-code-wrapper h3 {
+    margin: 0;
+
+    font-size: 18px;
+    font-weight: 650;
+
+    color: #0f172a;
+}
+
+.item-code-wrapper span {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+
+/* =========================
+   Status
+========================= */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+}
+
+.status-badge.active {
+    background: #ecfdf3;
+    color: #15803d;
+}
+
+.status-badge.active .status-dot {
+    background: #22c55e;
+}
+
+.status-badge.inactive {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.status-badge.inactive .status-dot {
+    background: #94a3b8;
+}
+
+
+/* =========================
+   Details Grid
+========================= */
+
+.details-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 0;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    padding: 22px 24px;
+
+    border-right: 1px solid #f1f5f9;
+}
+
+.detail-item:last-child {
+    border-right: none;
+}
+
+.detail-icon {
+    width: 36px;
+    height: 36px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background: #f8fafc;
+    color: #64748b;
+}
+
+.detail-label {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.detail-item strong {
+    display: block;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #334155;
+}
+
+
+/* =========================
+   Loading
+========================= */
+
+.details-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 300px;
+
+    font-size: 14px;
+    color: #64748b;
+}
+
+
+/* =========================
+   Error
+========================= */
+
+.details-error {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 13px 15px;
+    margin-bottom: 16px;
+
+    background: #fef2f2;
+
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+
+    color: #dc2626;
+
+    font-size: 14px;
+}
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 900px) {
+
+    .details-grid {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+    .detail-item:nth-child(2) {
+        border-right: none;
+    }
+
+    .detail-item:nth-child(1),
+    .detail-item:nth-child(2) {
+        border-bottom: 1px solid #f1f5f9;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .item-details-header {
+        align-items: flex-start;
+    }
+
+    .item-details-title-section h2 {
+        font-size: 20px;
+    }
+
+    .details-card-header {
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-item {
+        border-right: none;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+}

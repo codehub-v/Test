@@ -14,10 +14,12 @@ class InventoryItemReadSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "uuid",
+            "code",
             "fabric",
             "color",
             "unit",
             "accessory",
+            "is_active",
         ]
 
 
@@ -28,10 +30,12 @@ class InventoryItemWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventoryItem
         fields = [
+            "code",
             "fabric",
             "color",
             "unit",
             "accessory",
+            "is_active",
         ]
 
 
@@ -49,10 +53,12 @@ class InventoryItemRetrieveSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "uuid",
+            "code",
             "fabric_details",
             "color_details",
             "unit_details",
             "accessory_details",
+            "is_active",
         ]
 
     def get_fabric_details(self, obj):
@@ -62,7 +68,7 @@ class InventoryItemRetrieveSerializer(serializers.ModelSerializer):
         return {
             "id": obj.fabric.id,
             "uuid": str(obj.fabric.uuid),
-            "name": obj.fabric.name,
+            "identity": obj.fabric.identity,
         }
 
     def get_accessory_details(self, obj):
@@ -72,19 +78,19 @@ class InventoryItemRetrieveSerializer(serializers.ModelSerializer):
         return {
             "id": obj.accessory.id,
             "uuid": str(obj.accessory.uuid),
-            "name": obj.accessory.name,
+            "identity": obj.accessory.identity,
         }
 
     def get_color_details(self, obj):
         return {
             "id": obj.color.id,
             "uuid": str(obj.color.uuid),
-            "name": obj.color.name,
+            "identity": obj.color.identity,
         }
 
     def get_unit_details(self, obj):
         return {
             "id": obj.unit.id,
             "uuid": str(obj.unit.uuid),
-            "name": obj.unit.name,
+            "identity": obj.unit.identity,
         }

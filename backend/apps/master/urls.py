@@ -13,7 +13,17 @@ from apps.master.views import (
     AccessoryViewSet,
     BOMViewSet,
 )
-
+from apps.master.views.meta import (
+    ColorMeta, 
+    CustomerMeta, 
+    FabricMeta, 
+    SeasonMeta, 
+    SizeMeta, 
+    StyleMeta, 
+    SupplierMeta, 
+    UnitMeta, 
+    AccessoryMeta
+)
 
 router = DefaultRouter()
 
@@ -28,5 +38,17 @@ router.register("seasons", SeasonViewSet, basename="season")
 router.register("accessory", AccessoryViewSet, basename="accessory")
 router.register("bom", BOMViewSet, basename="bom")
 
+
+
+# Meta
+router.register("meta/colors", ColorMeta, basename="color-meta")
+router.register("meta/customers", CustomerMeta, basename="customer-meta")
+router.register("meta/fabrics", FabricMeta, basename="fabric-meta")
+router.register("meta/sizes", SizeMeta, basename="size-meta")
+router.register("meta/styles", StyleMeta, basename="style-meta")
+router.register("meta/suppliers", SupplierMeta, basename="supplier-meta")
+router.register("meta/seasons", SeasonMeta, basename="season-meta")
+router.register("meta/units", UnitMeta, basename="unit-meta")
+router.register("meta/accessories", AccessoryMeta, basename="accessory-meta")
 
 urlpatterns =[]+ router.urls
