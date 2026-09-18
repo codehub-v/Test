@@ -3,11 +3,11 @@ from apps.stocks.models import InventoryItem
 from apps.base.models import BaseModel
 
 
-class Stock(BaseModel):
+class StockItem(BaseModel):
     item = models.OneToOneField(
         InventoryItem,
         on_delete=models.CASCADE,
-        related_name="stock"
+        related_name="inventory_item"
     )
 
     quantity = models.DecimalField(

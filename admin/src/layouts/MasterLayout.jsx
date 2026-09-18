@@ -170,27 +170,19 @@ const MasterLayout = () => {
                     </NavLink>
 
 
-                    {/* PURCHASE */}
-
-                    <div className="menu-section">
-                        PURCHASE
-                    </div>
-
-                    <NavLink
-                        to="/purchase-orders"
-                        className="menu-item"
-                    >
-                        <ShoppingCart size={18} />
-                        <span>Purchase Orders</span>
-                    </NavLink>
-
-
                     {/* INVENTORY */}
 
                     <div className="menu-section">
                         INVENTORY
                     </div>
 
+                    <NavLink
+                        to="/items"
+                        className="menu-item"
+                    >
+                        <Package size={18} />
+                        <span>Items</span>
+                    </NavLink>
                     <NavLink
                         to="/stock"
                         className="menu-item"
@@ -200,26 +192,11 @@ const MasterLayout = () => {
                     </NavLink>
 
                     <NavLink
-                        to="/stock-transactions"
+                        to="/stock-log"
                         className="menu-item"
                     >
                         <ArrowDownUp size={18} />
                         <span>Stock Transactions</span>
-                    </NavLink>
-
-
-                    {/* SALES */}
-
-                    <div className="menu-section">
-                        SALES
-                    </div>
-
-                    <NavLink
-                        to="/sales-orders"
-                        className="menu-item"
-                    >
-                        <Receipt size={18} />
-                        <span>Sales Orders</span>
                     </NavLink>
 
 

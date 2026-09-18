@@ -27,6 +27,9 @@ import AccessoryList from "./pages/Masters/Accessory/AccessoryList";
 import BOMList from "./pages/Masters/BOM/BOMList";
 import BOMForm from "./pages/Masters/BOM/BOMForm";
 import BOMDetails from "./pages/Masters/BOM/BOMDetails";
+import ItemList from "./pages/Inventory/Items/ItemList";
+import ItemForm from "./pages/Inventory/Items/ItemForm";
+import ItemDetials from "./pages/Inventory/Items/ItemDetials";
 
 function App() {
     return (
@@ -63,6 +66,12 @@ function App() {
                         <Route path="bom/add" element={<BOMForm />} />
                         <Route path="bom/add/:id" element={<BOMForm />} />
                         <Route path="bom/details/:id" element={<BOMDetails />} />
+                        
+                        <Route path="items" element={<ItemList />} />
+                        <Route path="items/add" element={<ItemForm />} />
+                        <Route path="items/add/:id" element={<ItemForm />} />
+                        <Route path="items/details/:id" element={<ItemDetials />} />
+
 
                     </Route>
                 </Route>
