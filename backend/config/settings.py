@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "apps.base",
     "apps.users",
     "apps.master",
+    "apps.stocks",
     "corsheaders",
     "django_filters",
 ]

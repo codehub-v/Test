@@ -106,6 +106,13 @@ const MasterLayout = () => {
                         <Truck size={18} />
                         <span>Suppliers</span>
                     </NavLink>
+                    <NavLink
+                        to="/accessory"
+                        className="menu-item"
+                    >
+                        <Truck size={18} />
+                        <span>Accessory</span>
+                    </NavLink>
 
                     <NavLink
                         to="/colors"

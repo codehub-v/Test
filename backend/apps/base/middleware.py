@@ -65,6 +65,15 @@ def custom_exception_handler(exc, context):
                 "field": "code",
                 "message": "Season code already exists.",
             },
+            "unique_accessory_identity_case_insensitive": {
+                "field": "identity",
+                "message": "Accessory name already exists.",
+            },
+
+            "unique_accessory_code_case_insensitive": {
+                "field": "code",
+                "message": "Accessory code already exists.",
+            },
         }
 
         for constraint, details in messages.items():

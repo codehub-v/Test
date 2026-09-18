@@ -6,3 +6,5 @@ from .styles import StylesViewSet
 from .supliers import SupplierViewSet
 from .units import UnitViewSet
 from .season import SeasonViewSet
+from .accessory import AccessoryViewSet
+from .bom import BOMViewSet

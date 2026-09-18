@@ -21,4 +21,8 @@ urlpatterns = [
         "master/",
         include("apps.master.urls")
     ),
+    path(
+        "inventory/",
+        include("apps.stocks.urls")
+    ),
 ]

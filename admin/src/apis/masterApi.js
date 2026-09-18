@@ -173,3 +173,31 @@ export const patchUnit = (id, data) => {
 export const deleteUnit = (id) => {
     return api.delete(`/master/units/${id}/`);
 };
+
+// Accessory APIs
+export const getAccessory = (params={}) => {
+    return api.get("/master/accessory/", {params});
+};
+
+export const createAccessory = (data) => {
+    return api.post("/master/accessory/", data);
+};
+
+export const updateAccessory = (id, data) => {
+    return api.put(`/master/accessory/${id}/`, data);
+};
+
+export const patchAccessory = (id, data) => {
+    return api.patch(`/master/accessory/${id}/`, data);
+};
+
+export const deleteAccessory = (id) => {
+    return api.delete(`/master/accessory/${id}/`);
+};
+
+// BOM APIs
+export const getBOMs = (params = {}) => {
+    return api.get("/master/bom/", {
+        params,
+    });
+};

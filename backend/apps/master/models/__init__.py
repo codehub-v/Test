@@ -6,3 +6,5 @@ from .styles import Style
 from .supliers import Supplier
 from .units import Unit
 from .seasons import Season
+from .accessory import Accessory
+from .bom import BOM, BOMItem

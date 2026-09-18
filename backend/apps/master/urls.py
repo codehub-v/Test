@@ -10,6 +10,8 @@ from apps.master.views import (
     FabricsViewSet,
     UnitViewSet,
     SeasonViewSet,
+    AccessoryViewSet,
+    BOMViewSet,
 )
 
 
@@ -23,6 +25,8 @@ router.register("sizes", SizesViewSet, basename="size")
 router.register("fabrics", FabricsViewSet, basename="fabric")
 router.register("units", UnitViewSet, basename="unit")
 router.register("seasons", SeasonViewSet, basename="season")
+router.register("accessory", AccessoryViewSet, basename="accessory")
+router.register("bom", BOMViewSet, basename="bom")
 
 
 urlpatterns =[]+ router.urls
