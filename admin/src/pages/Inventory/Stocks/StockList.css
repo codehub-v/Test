@@ -1,0 +1,507 @@
+
+.stock-list-page {
+    background: #f8fafc;
+    min-height: 100vh;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+
+/* =========================
+   Header
+========================= */
+
+.stock-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 24px;
+}
+
+.stock-list-header h2 {
+    margin: 0;
+
+    font-size: 24px;
+    font-weight: 650;
+
+    color: #0f172a;
+}
+
+.stock-list-header p {
+    margin: 4px 0 0;
+
+    font-size: 14px;
+    color: #64748b;
+}
+
+
+/* =========================
+   Add Button
+========================= */
+
+.stock-add-button {
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 0 16px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #4f46e5;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.stock-add-button:hover {
+    background: #4338ca;
+}
+
+
+/* =========================
+   Error
+========================= */
+
+.stock-error {
+    padding: 12px 14px;
+
+    margin-bottom: 16px;
+
+    background: #fef2f2;
+
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+
+    color: #dc2626;
+
+    font-size: 14px;
+}
+
+
+/* =========================
+   Filter Card
+========================= */
+
+.stock-filter-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 14px;
+
+    margin-bottom: 16px;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+}
+
+
+/* Search */
+
+.stock-search-wrapper {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    flex: 1;
+
+    min-width: 220px;
+}
+
+.stock-search-wrapper svg {
+    position: absolute;
+    left: 11px;
+
+    color: #94a3b8;
+}
+
+.stock-search-wrapper input {
+    width: 100%;
+    height: 38px;
+
+    box-sizing: border-box;
+
+    padding: 0 12px 0 35px;
+
+    border: 1px solid #dbe1ea;
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #334155;
+    font-size: 14px;
+}
+
+.stock-search-wrapper input:focus {
+    border-color: #6366f1;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.08);
+}
+
+
+/* Quantity Filters */
+
+.stock-filter-group {
+    display: flex;
+    gap: 8px;
+}
+
+.stock-filter-group input {
+    width: 100px;
+    height: 38px;
+
+    box-sizing: border-box;
+
+    padding: 0 10px;
+
+    border: 1px solid #dbe1ea;
+    border-radius: 8px;
+
+    outline: none;
+
+    color: #334155;
+    font-size: 13px;
+}
+
+.stock-filter-group input:focus {
+    border-color: #6366f1;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.08);
+}
+
+
+/* Ordering */
+
+.stock-filter-select {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+}
+
+.stock-filter-select svg {
+    position: absolute;
+    left: 10px;
+
+    color: #64748b;
+
+    pointer-events: none;
+}
+
+.stock-filter-select select {
+    height: 38px;
+
+    padding: 0 12px 0 32px;
+
+    border: 1px solid #dbe1ea;
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #334155;
+
+    font-size: 13px;
+
+    cursor: pointer;
+}
+
+.stock-filter-select select:focus {
+    border-color: #6366f1;
+}
+
+
+/* Reset */
+
+.stock-reset-button {
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 0 12px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #64748b;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.stock-reset-button:hover {
+    background: #f8fafc;
+}
+
+
+/* =========================
+   Table Card
+========================= */
+
+.stock-table-card {
+    background: #ffffff;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+
+    box-shadow:
+        0 1px 3px rgba(15, 23, 42, 0.04);
+
+    overflow: hidden;
+}
+
+
+/* =========================
+   Table
+========================= */
+
+.stock-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.stock-table-wrapper table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 800px;
+}
+
+.stock-table-wrapper th {
+    padding: 12px 18px;
+
+    background: #f8fafc;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    color: #64748b;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    text-align: left;
+
+    white-space: nowrap;
+}
+
+.stock-table-wrapper td {
+    padding: 15px 18px;
+
+    border-bottom: 1px solid #f1f5f9;
+
+    color: #334155;
+
+    font-size: 14px;
+}
+
+.stock-table-wrapper tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.stock-table-wrapper tbody tr:hover {
+    background: #fafbff;
+}
+
+
+/* =========================
+   Item
+========================= */
+
+.stock-item-name {
+    display: flex;
+    flex-direction: column;
+}
+
+.stock-item-name strong {
+    color: #334155;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   Quantity
+========================= */
+
+.quantity-value {
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #0f172a;
+}
+
+.waiting-value {
+    font-size: 14px;
+    font-weight: 500;
+
+    color: #64748b;
+}
+
+
+/* =========================
+   Actions
+========================= */
+
+.stock-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.stock-actions button {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #64748b;
+
+    cursor: pointer;
+}
+
+.stock-actions button:hover {
+    background: #f8fafc;
+    color: #4f46e5;
+    border-color: #c7d2fe;
+}
+
+
+/* =========================
+   Empty
+========================= */
+
+.stock-empty {
+    height: 180px;
+
+    text-align: center !important;
+
+    color: #94a3b8 !important;
+
+    font-size: 14px !important;
+}
+
+
+/* =========================
+   Footer
+========================= */
+
+.stock-table-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px 18px;
+
+    border-top: 1px solid #e2e8f0;
+
+    background: #ffffff;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+.stock-table-footer strong {
+    color: #334155;
+    font-weight: 600;
+}
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 900px) {
+
+    .stock-filter-card {
+        flex-wrap: wrap;
+    }
+
+    .stock-search-wrapper {
+        flex-basis: 100%;
+    }
+
+    .stock-filter-group {
+        flex: 1;
+    }
+
+    .stock-filter-group input {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .stock-list-header {
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .stock-list-header h2 {
+        font-size: 20px;
+    }
+
+    .stock-add-button {
+        padding: 0 12px;
+    }
+
+    .stock-filter-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .stock-filter-group {
+        width: 100%;
+    }
+
+    .stock-filter-select select {
+        width: 100%;
+    }
+
+    .stock-reset-button {
+        justify-content: center;
+    }
+
+    .stock-table-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}

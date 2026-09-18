@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -7,6 +7,7 @@ from apps.stocks.serializers import (
     InventoryItemReadSerializer,
     InventoryItemRetrieveSerializer,
     InventoryItemWriteSerializer,
+    InventoryItemMetaSerializer
 )
 
 
@@ -48,3 +49,15 @@ class InventoryItemViewSet(ModelViewSet):
             return InventoryItemRetrieveSerializer
 
         return InventoryItemWriteSerializer
+
+
+class InventoryItemMeta(ReadOnlyModelViewSet):
+    
+    pagination_class=None
+    queryset = InventoryItem.objects.filter(is_active=True).select_related(
+        "fabric",
+        "accessory",
+        "color",
+        "unit",
+    )
+    serializer_class = InventoryItemMetaSerializer

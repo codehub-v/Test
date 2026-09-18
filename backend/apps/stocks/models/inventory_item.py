@@ -3,6 +3,7 @@ from apps.master.models import Fabric, Color, Unit, Accessory
 from apps.base.models import BaseModel
 
 
+
 class InventoryItem(BaseModel):
 
     code = models.CharField(
@@ -36,11 +37,31 @@ class InventoryItem(BaseModel):
 
     class Meta:
         constraints = [
+
             models.UniqueConstraint(
-                fields=["fabric", "accessory", "color", "unit"],
-                # fields=["fabric", "accessory", "color"],
-                name="unique_inventory_item"
+                fields=[
+                    "fabric",
+                    "color",
+                    "unit",
+                ],
+                condition=models.Q(
+                    fabric__isnull=False
+                ),
+                name="unique_fabric_inventory_item",
             ),
+
+            models.UniqueConstraint(
+                fields=[
+                    "accessory",
+                    "color",
+                    "unit",
+                ],
+                condition=models.Q(
+                    accessory__isnull=False
+                ),
+                name="unique_accessory_inventory_item",
+            ),
+
             models.CheckConstraint(
                 condition=(
                     models.Q(
@@ -54,8 +75,5 @@ class InventoryItem(BaseModel):
                     )
                 ),
                 name="inventory_item_fabric_or_accessory"
-            )
+            ),
         ]
-
-
-

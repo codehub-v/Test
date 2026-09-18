@@ -1,1 +1,2 @@
-from .inventory_item import InventoryItemReadSerializer, InventoryItemWriteSerializer, InventoryItemRetrieveSerializer
+from .inventory_item import InventoryItemReadSerializer, InventoryItemWriteSerializer, InventoryItemRetrieveSerializer, InventoryItemMetaSerializer
+from .stock_item import StockItemReadSerializer, StockItemWriteSerializer

@@ -1,0 +1,312 @@
+
+.stock-modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(15, 23, 42, 0.45);
+}
+
+.stock-modal {
+    width: 100%;
+    max-width: 520px;
+
+    background: #ffffff;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 20px 50px rgba(15, 23, 42, 0.18);
+
+    overflow: hidden;
+}
+
+
+/* =========================
+   Header
+========================= */
+
+.stock-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    padding: 20px 22px;
+
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.stock-modal-header h2 {
+    margin: 0;
+
+    font-size: 19px;
+    font-weight: 650;
+
+    color: #0f172a;
+}
+
+.stock-modal-header p {
+    margin: 4px 0 0;
+
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.stock-modal-close {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #64748b;
+
+    cursor: pointer;
+}
+
+.stock-modal-close:hover {
+    background: #f8fafc;
+}
+
+.stock-modal-close:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   Messages
+========================= */
+
+.stock-form-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+
+    margin: 16px 20px 0;
+
+    padding: 11px 13px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.stock-form-message svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.stock-form-message.success {
+    background: #ecfdf3;
+
+    border: 1px solid #bbf7d0;
+
+    color: #15803d;
+}
+
+.stock-form-message.error {
+    background: #fef2f2;
+
+    border: 1px solid #fecaca;
+
+    color: #dc2626;
+}
+
+
+/* =========================
+   Body
+========================= */
+
+.stock-modal-body {
+    padding: 22px;
+}
+
+.stock-form-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    margin-bottom: 18px;
+}
+
+.stock-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.stock-form-group label {
+    font-size: 13px;
+    font-weight: 600;
+
+    color: #475569;
+}
+
+.stock-form-group label span {
+    margin-left: 3px;
+    color: #dc2626;
+}
+
+.stock-form-group input,
+.stock-form-group select {
+    width: 100%;
+    height: 40px;
+
+    box-sizing: border-box;
+
+    padding: 0 12px;
+
+    border: 1px solid #dbe1ea;
+    border-radius: 8px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: #334155;
+
+    font-size: 14px;
+}
+
+.stock-form-group input:focus,
+.stock-form-group select:focus {
+    border-color: #6366f1;
+
+    box-shadow:
+        0 0 0 3px rgba(99, 102, 241, 0.08);
+}
+
+.stock-form-group select {
+    cursor: pointer;
+}
+
+.stock-form-group input:disabled,
+.stock-form-group select:disabled {
+    background: #f8fafc;
+
+    color: #94a3b8;
+
+    cursor: not-allowed;
+}
+
+.stock-form-group small {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+
+/* =========================
+   Footer
+========================= */
+
+.stock-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 9px;
+
+    padding: 15px 22px;
+
+    border-top: 1px solid #e2e8f0;
+
+    background: #ffffff;
+}
+
+.stock-cancel-button {
+    height: 40px;
+
+    padding: 0 16px;
+
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    color: #64748b;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.stock-cancel-button:hover {
+    background: #f8fafc;
+}
+
+.stock-cancel-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.stock-save-button {
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 0 17px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #4f46e5;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.stock-save-button:hover {
+    background: #4338ca;
+}
+
+.stock-save-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+
+/* =========================
+   Responsive
+========================= */
+
+@media (max-width: 600px) {
+
+    .stock-modal-overlay {
+        padding: 12px;
+    }
+
+    .stock-modal-header {
+        padding: 18px;
+    }
+
+    .stock-modal-body {
+        padding: 18px;
+    }
+
+    .stock-modal-footer {
+        padding: 14px 18px;
+    }
+}

@@ -30,6 +30,7 @@ import BOMDetails from "./pages/Masters/BOM/BOMDetails";
 import ItemList from "./pages/Inventory/Items/ItemList";
 import ItemForm from "./pages/Inventory/Items/ItemForm";
 import ItemDetials from "./pages/Inventory/Items/ItemDetials";
+import StockList from "./pages/Inventory/Stocks/StockList";
 
 function App() {
     return (
@@ -71,6 +72,9 @@ function App() {
                         <Route path="items/add" element={<ItemForm />} />
                         <Route path="items/add/:id" element={<ItemForm />} />
                         <Route path="items/details/:id" element={<ItemDetials />} />
+
+
+                        <Route path="stock" element={<StockList />} />
 
 
                     </Route>

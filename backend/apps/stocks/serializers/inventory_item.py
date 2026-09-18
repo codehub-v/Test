@@ -2,6 +2,47 @@ from rest_framework import serializers
 from apps.stocks.models import InventoryItem
 
 
+class InventoryItemMetaSerializer(serializers.ModelSerializer):
+
+    fabric = serializers.StringRelatedField()
+    accessory = serializers.StringRelatedField()
+    color = serializers.StringRelatedField()
+    unit = serializers.StringRelatedField()
+
+    material_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = InventoryItem
+        fields = [
+            "id",
+            "uuid",
+            "code",
+            "fabric",
+            "accessory",
+            "material_name",
+            "color",
+            "unit",
+            "is_active",
+        ]
+
+    
+    def get_material_name(self, obj):
+
+        item = obj
+
+        color = item.color.identity
+
+        if item.fabric:
+            material = item.fabric.identity
+
+        elif item.accessory:
+            material = item.accessory.identity
+
+        else:
+            material = ""
+
+        return f"{color} - {material}"
+
 class InventoryItemReadSerializer(serializers.ModelSerializer):
 
     fabric = serializers.StringRelatedField()
