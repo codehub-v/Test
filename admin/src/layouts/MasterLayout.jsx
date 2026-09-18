@@ -198,6 +198,13 @@ const MasterLayout = () => {
                         <ArrowDownUp size={18} />
                         <span>Stock Transactions</span>
                     </NavLink>
+                    <NavLink
+                        to="/supply"
+                        className="menu-item"
+                    >
+                        <ArrowDownUp size={18} />
+                        <span>Supply Order</span>
+                    </NavLink>
 
 
                     {/* PRODUCTION */}

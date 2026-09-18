@@ -28,7 +28,7 @@ router.register(
     basename="stock-log"
 )
 router.register(
-    "supplies",
+    "supply-orders",
     SupplyOrderViewSet,
     basename="supplies"
 )

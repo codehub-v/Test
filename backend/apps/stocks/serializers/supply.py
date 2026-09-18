@@ -1,20 +1,28 @@
-from rest_framework import serializers
 
-from apps.master.models import Supplier,Fabric, Accessory, Color
+from rest_framework import serializers
+from apps.master.models import Supplier, Fabric, Accessory, Color, Unit
 from apps.stocks.models import SupplyOrder, SupplyOrderItem
 
 
 class SupplyOrderItemReadSerializer(serializers.ModelSerializer):
-    fabric_name = serializers.CharField(
-        source="fabric.name",
+
+    fabric_identity = serializers.CharField(
+        source="fabric.identity",
         read_only=True
     )
-    accessory_name = serializers.CharField(
-        source="accessory.name",
+
+    accessory_identity = serializers.CharField(
+        source="accessory.identity",
         read_only=True
     )
-    color_name = serializers.CharField(
-        source="color.name",
+
+    color_identity = serializers.CharField(
+        source="color.identity",
+        read_only=True
+    )
+
+    unit_identity = serializers.CharField(
+        source="unit.identity",
         read_only=True
     )
 
@@ -25,15 +33,16 @@ class SupplyOrderItemReadSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "fabric",
-            "fabric_name",
+            "fabric_identity",
             "accessory",
-            "accessory_name",
+            "accessory_identity",
             "color",
-            "color_name",
+            "color_identity",
+            "unit",
+            "unit_identity",
             "ordered_quantity",
             "received_quantity",
             "remaining_quantity",
-            "unit_price",
         ]
 
     def get_remaining_quantity(self, obj):
@@ -51,15 +60,14 @@ class SupplyOrderItemWriteSerializer(serializers.ModelSerializer):
             "fabric",
             "accessory",
             "color",
+            "unit",
             "ordered_quantity",
-            "unit_price",
         ]
 
     def validate(self, attrs):
         fabric = attrs.get("fabric")
         accessory = attrs.get("accessory")
 
-        # Exactly one of fabric/accessory should be selected
         if fabric and accessory:
             raise serializers.ValidationError(
                 "Select either fabric or accessory, not both."
@@ -72,9 +80,11 @@ class SupplyOrderItemWriteSerializer(serializers.ModelSerializer):
 
         return attrs
 
+
 class SupplyOrderListSerializer(serializers.ModelSerializer):
-    supplier_name = serializers.CharField(
-        source="supplier.name",
+
+    supplier_identity = serializers.CharField(
+        source="supplier.identity",
         read_only=True
     )
 
@@ -84,16 +94,17 @@ class SupplyOrderListSerializer(serializers.ModelSerializer):
             "id",
             "order_number",
             "supplier",
-            "supplier_name",
+            "supplier_identity",
             "order_date",
-            "expected_date",
             "status",
             "created_at",
         ]
 
+
 class SupplyOrderRetrieveSerializer(serializers.ModelSerializer):
-    supplier_name = serializers.CharField(
-        source="supplier.name",
+
+    supplier_identity = serializers.CharField(
+        source="supplier.identity",
         read_only=True
     )
 
@@ -108,9 +119,8 @@ class SupplyOrderRetrieveSerializer(serializers.ModelSerializer):
             "id",
             "order_number",
             "supplier",
-            "supplier_name",
+            "supplier_identity",
             "order_date",
-            "expected_date",
             "status",
             "notes",
             "items",
@@ -118,7 +128,9 @@ class SupplyOrderRetrieveSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
+
 class SupplyOrderWriteSerializer(serializers.ModelSerializer):
+
     items = SupplyOrderItemWriteSerializer(
         many=True
     )
@@ -128,7 +140,6 @@ class SupplyOrderWriteSerializer(serializers.ModelSerializer):
         fields = [
             "supplier",
             "order_date",
-            "expected_date",
             "notes",
             "items",
         ]
@@ -164,11 +175,8 @@ class SupplyOrderWriteSerializer(serializers.ModelSerializer):
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
-        instance.save()
-
         if items_data is not None:
 
-            # Don't allow editing items if already received
             if instance.items.filter(
                 received_quantity__gt=0
             ).exists():
@@ -185,5 +193,7 @@ class SupplyOrderWriteSerializer(serializers.ModelSerializer):
                 )
                 for item_data in items_data
             ])
+
+        instance.save()
 
         return instance

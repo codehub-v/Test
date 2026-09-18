@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from django.db import transaction
-from django.db.models import F
+from django.db.models import F, Q
 
 from rest_framework import status
 from rest_framework.decorators import action
@@ -9,22 +9,78 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from apps.stocks.models import SupplyOrder, SupplyOrderItem
+from apps.stocks.models import (
+    SupplyOrder,
+    SupplyOrderItem,
+    InventoryItem,
+)
+
 from apps.stocks.serializers import (
     SupplyOrderListSerializer,
     SupplyOrderRetrieveSerializer,
     SupplyOrderWriteSerializer,
 )
 
-from apps.stocks.models import InventoryItem
 
 class SupplyOrderViewSet(ModelViewSet):
 
-    queryset = SupplyOrder.objects.select_related(
-        "supplier"
-    ).prefetch_related(
-        "items"
-    ).order_by("-id")
+    queryset = (
+        SupplyOrder.objects
+        .select_related("supplier")
+        .prefetch_related("items")
+        .order_by("-id")
+    )
+
+    def get_queryset(self):
+
+        queryset = super().get_queryset()
+
+        params = self.request.query_params
+
+        search = params.get("search")
+
+        if search:
+            queryset = queryset.filter(
+                Q(order_number__icontains=search)
+                | Q(supplier__identity__icontains=search)
+            )
+
+        status_filter = params.get("status")
+
+        if status_filter:
+            queryset = queryset.filter(
+                status=status_filter
+            )
+
+        supplier = params.get("supplier")
+
+        if supplier:
+            queryset = queryset.filter(
+                supplier_id=supplier
+            )
+
+        order_date = params.get("order_date")
+
+        if order_date:
+            queryset = queryset.filter(
+                order_date=order_date
+            )
+
+        order_date_from = params.get("order_date_from")
+
+        if order_date_from:
+            queryset = queryset.filter(
+                order_date__gte=order_date_from
+            )
+
+        order_date_to = params.get("order_date_to")
+
+        if order_date_to:
+            queryset = queryset.filter(
+                order_date__lte=order_date_to
+            )
+
+        return queryset
 
     def get_serializer_class(self):
 
@@ -35,6 +91,7 @@ class SupplyOrderViewSet(ModelViewSet):
             return SupplyOrderRetrieveSerializer
 
         return SupplyOrderWriteSerializer
+
     @action(
         detail=True,
         methods=["post"],
@@ -42,22 +99,34 @@ class SupplyOrderViewSet(ModelViewSet):
     )
     def receive(self, request, pk=None):
 
-        supply_order = self.get_object()
-
-        if supply_order.status in ["cancelled", "received"]:
-            raise ValidationError(
-                f"Cannot receive stock for a "
-                f"{supply_order.status} order."
-            )
-
-        items_data = request.data.get("items", [])
-
-        if not items_data:
-            raise ValidationError(
-                "At least one item is required."
-            )
-
         with transaction.atomic():
+
+            supply_order = (
+                SupplyOrder.objects
+                .select_for_update()
+                .get(pk=pk)
+            )
+
+            if supply_order.status in [
+                "cancelled",
+                "received",
+            ]:
+                raise ValidationError(
+                    f"Cannot receive stock for a "
+                    f"{supply_order.status} order."
+                )
+
+            items_data = request.data.get(
+                "items",
+                []
+            )
+
+            if not items_data:
+                raise ValidationError(
+                    "At least one item is required."
+                )
+
+            received_item_ids = set()
 
             for data in items_data:
 
@@ -69,13 +138,22 @@ class SupplyOrderViewSet(ModelViewSet):
                         "item_id is required."
                     )
 
+                if item_id in received_item_ids:
+                    raise ValidationError(
+                        f"Item {item_id} is duplicated."
+                    )
+
+                received_item_ids.add(item_id)
+
                 if quantity is None:
                     raise ValidationError(
                         "quantity is required."
                     )
 
                 try:
-                    quantity = Decimal(str(quantity))
+                    quantity = Decimal(
+                        str(quantity)
+                    )
                 except Exception:
                     raise ValidationError(
                         "Invalid quantity."
@@ -86,7 +164,6 @@ class SupplyOrderViewSet(ModelViewSet):
                         "Receive quantity must be greater than zero."
                     )
 
-                # Lock supply order item
                 item = (
                     SupplyOrderItem.objects
                     .select_for_update()
@@ -94,6 +171,7 @@ class SupplyOrderViewSet(ModelViewSet):
                         "fabric",
                         "accessory",
                         "color",
+                        "unit",
                     )
                     .get(
                         id=item_id,
@@ -112,7 +190,6 @@ class SupplyOrderViewSet(ModelViewSet):
                         f"is remaining for item {item.id}."
                     )
 
-                # Update received quantity
                 item.received_quantity += quantity
 
                 item.save(
@@ -121,19 +198,18 @@ class SupplyOrderViewSet(ModelViewSet):
                     ]
                 )
 
-                # -------------------------------------------------
-                # Update Inventory
-                # -------------------------------------------------
-
                 inventory_filter = {
                     "color": item.color,
+                    "unit": item.unit,
                 }
 
                 if item.fabric:
+
                     inventory_filter["fabric"] = item.fabric
                     inventory_filter["accessory"] = None
 
                 elif item.accessory:
+
                     inventory_filter["accessory"] = item.accessory
                     inventory_filter["fabric"] = None
 
@@ -158,14 +234,15 @@ class SupplyOrderViewSet(ModelViewSet):
                     update_fields=["quantity"]
                 )
 
-            # -----------------------------------------------------
-            # Update Supply Order Status
-            # -----------------------------------------------------
-
-            supply_order_items = supply_order.items.all()
+            supply_order_items = (
+                SupplyOrderItem.objects.filter(
+                    supply_order=supply_order
+                )
+            )
 
             all_received = all(
-                item.received_quantity >= item.ordered_quantity
+                item.received_quantity
+                >= item.ordered_quantity
                 for item in supply_order_items
             )
 
@@ -175,12 +252,15 @@ class SupplyOrderViewSet(ModelViewSet):
             )
 
             if all_received:
+
                 supply_order.status = "received"
 
             elif any_received:
+
                 supply_order.status = "partial"
 
             else:
+
                 supply_order.status = "ordered"
 
             supply_order.save(

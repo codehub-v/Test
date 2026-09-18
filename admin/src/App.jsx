@@ -33,6 +33,10 @@ import ItemDetials from "./pages/Inventory/Items/ItemDetials";
 import StockList from "./pages/Inventory/Stocks/StockList";
 import StockLogList from "./pages/Inventory/StockLog/StockLogList";
 import StockLogForm from "./pages/Inventory/StockLog/StockLogForm";
+import SupplyForm from "./pages/Inventory/Supply/SupplyForm";
+import SupplyReceive from "./pages/Inventory/Supply/SupplyReceive";
+import SupplyList from "./pages/Inventory/Supply/SupplyList";
+import SupplyDetails from "./pages/Inventory/Supply/SupplyDetails";
 
 function App() {
     return (
@@ -81,7 +85,11 @@ function App() {
                         <Route path="stock-log" element={<StockLogList />} /> 
                         <Route path="stock-log/add" element={<StockLogForm />} /> 
 
-
+                        <Route path="supply" element={<SupplyList />} />
+                        <Route path="supply/add" element={<SupplyForm />} />
+                        <Route path="supply/add/:id" element={<SupplyForm />} />
+                        <Route path="supply/details/:id" element={<SupplyDetails />} />
+                        <Route path="supply/receive/:id" element={<SupplyReceive />} />
                     </Route>
                 </Route>
 

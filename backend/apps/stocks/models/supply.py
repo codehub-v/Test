@@ -1,12 +1,11 @@
 from apps.base.models import BaseModel
 from django.db import models
-from django.db.models.functions import Lower
 from apps.master.models import Supplier
 from apps.master.models import Fabric, Accessory, Color, Unit
 
+
 class SupplyOrder(models.Model):
     ORDER_STATUS = (
-        ("draft", "Draft"),
         ("ordered", "Ordered"),
         ("partial", "Partially Received"),
         ("received", "Received"),
@@ -25,12 +24,11 @@ class SupplyOrder(models.Model):
     )
 
     order_date = models.DateField()
-    expected_date = models.DateField(null=True, blank=True)
 
     status = models.CharField(
         max_length=20,
         choices=ORDER_STATUS,
-        default="draft"
+        default="ordered"
     )
 
     notes = models.TextField(blank=True)
@@ -39,7 +37,36 @@ class SupplyOrder(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+    def save(self, *args, **kwargs):
 
+        if not self.order_number:
+
+            last_order = (
+                SupplyOrder.objects
+                .order_by("-id")
+                .first()
+            )
+
+            if last_order and last_order.order_number:
+                try:
+                    last_number = int(
+                        last_order.order_number.split("-")[-1]
+                    )
+                except (ValueError, IndexError):
+                    last_number = 0
+            else:
+                last_number = 0
+
+            self.order_number = (
+                f"PO-{last_number + 1:05d}"
+            )
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.order_number
+
+    
 class SupplyOrderItem(models.Model):
     supply_order = models.ForeignKey(
         SupplyOrder,
@@ -65,6 +92,11 @@ class SupplyOrderItem(models.Model):
         Color,
         on_delete=models.PROTECT
     )
+    unit = models.ForeignKey(
+        Unit,
+        on_delete=models.PROTECT,
+        related_name="supply_order_items"
+    )
 
     ordered_quantity = models.DecimalField(
         max_digits=12,
@@ -77,10 +109,6 @@ class SupplyOrderItem(models.Model):
         default=0
     )
 
-    unit_price = models.DecimalField(
-        max_digits=12,
-        decimal_places=2,
-        default=0
-    )
+
 
     created_at = models.DateTimeField(auto_now_add=True)
