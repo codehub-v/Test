@@ -293,6 +293,8 @@ const SupplyReceive = () => {
                   <th>Color</th>
                   <th>Unit</th>
                   <th>Ordered Qty</th>
+                  <th>Received Qty</th>
+                  <th>Remaining Qty</th>
                   <th>Receive Qty</th>
                 </tr>
               </thead>
@@ -330,6 +332,8 @@ const SupplyReceive = () => {
                       <td>{item.unit_identity || "-"}</td>
 
                       <td className="quantity">{item.ordered_quantity}</td>
+                      <td className="quantity">{item.received_quantity}</td>
+                      <td className="quantity">{item.remaining_quantity}</td>
 
                       <td>
                         {remaining > 0 ? (
