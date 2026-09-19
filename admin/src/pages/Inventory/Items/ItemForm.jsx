@@ -23,23 +23,15 @@ const ItemForm = () => {
     units: [],
   });
 
-  /*
-   * Frontend only.
-   *
-   * This is NOT sent to the backend.
-   *
-   * Values:
-   * "fabric"
-   * "accessory"
-   */
   const [itemType, setItemType] = useState("");
 
   const [formData, setFormData] = useState({
-    code: "",
+    // code: "",
     fabric: "",
     accessory: "",
     color: "",
     unit: "",
+    quantity: "",
     is_active: true,
   });
 
@@ -47,18 +39,11 @@ const ItemForm = () => {
     Authorization: `Token ${localStorage.getItem("token")}`,
   };
 
-  /* =========================
-       Clear Messages
-    ========================= */
 
   const clearMessages = () => {
     setSuccessMessage("");
     setErrorMessage("");
   };
-
-  /* =========================
-       Fetch Master Data
-    ========================= */
 
   const fetchMasterData = async () => {
     try {
@@ -97,9 +82,6 @@ const ItemForm = () => {
     }
   };
 
-  /* =========================
-       Fetch Existing Item
-    ========================= */
 
   const fetchItem = async () => {
     if (!id) {
@@ -116,18 +98,6 @@ const ItemForm = () => {
 
       const item = response.data;
 
-      /*
-       * Determine item type from existing FK.
-       *
-       * Fabric exists:
-       *     -> Fabric radio selected
-       *
-       * Accessory exists:
-       *     -> Accessory radio selected
-       *
-       * itemType is frontend only.
-       */
-
       if (item.fabric_details) {
         setItemType("fabric");
       } else if (item.accessory_details) {
@@ -137,7 +107,7 @@ const ItemForm = () => {
       }
 
       setFormData({
-        code: item.code || "",
+        // code: item.code || "",
 
         fabric: item.fabric_details?.id || "",
 
@@ -147,6 +117,7 @@ const ItemForm = () => {
 
         unit: item.unit_details?.id || "",
 
+        quantity: item.quantity ?? 0,
         is_active: item.is_active ?? true,
       });
     } catch (error) {
@@ -158,10 +129,6 @@ const ItemForm = () => {
     }
   };
 
-  /* =========================
-       Initial Load
-    ========================= */
-
   useEffect(() => {
     fetchMasterData();
   }, []);
@@ -170,9 +137,6 @@ const ItemForm = () => {
     fetchItem();
   }, [id]);
 
-  /* =========================
-       Normal Input Change
-    ========================= */
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -185,14 +149,8 @@ const ItemForm = () => {
     }));
   };
 
-  /* =========================
-       Item Type Change
-    ========================= */
 
   const handleItemTypeChange = (type) => {
-    /*
-     * Item type cannot be changed during edit.
-     */
 
     if (isEdit) {
       return;
@@ -202,13 +160,6 @@ const ItemForm = () => {
 
     setItemType(type);
 
-    /*
-     * Clear the opposite FK.
-     *
-     * Example:
-     * Fabric selected
-     * -> accessory becomes empty
-     */
 
     setFormData((prev) => ({
       ...prev,
@@ -235,36 +186,20 @@ const ItemForm = () => {
       return "Unable to connect to the server. Please try again.";
     }
 
-    /*
-     * Django REST Framework field errors
-     *
-     * Example:
-     *
-     * {
-     *     "code": [
-     *         "inventory item with this code already exists."
-     *     ]
-     * }
-     */
+
 
     if (typeof data === "object") {
-      /*
-       * Code unique error
-       */
 
-      if (data.code) {
-        const codeError = Array.isArray(data.code) ? data.code[0] : data.code;
+      // if (data.code) {
+      //   const codeError = Array.isArray(data.code) ? data.code[0] : data.code;
 
-        if (String(codeError).toLowerCase().includes("already exists")) {
-          return "This item code is already in use. Please enter a different code.";
-        }
+      //   if (String(codeError).toLowerCase().includes("already exists")) {
+      //     return "This item code is already in use. Please enter a different code.";
+      //   }
 
-        return `Item code: ${codeError}`;
-      }
+      //   return `Item code: ${codeError}`;
+      // }
 
-      /*
-       * Fabric / Accessory combination error
-       */
 
       if (data.non_field_errors || data.detail) {
         const message = data.non_field_errors || data.detail;
@@ -273,10 +208,7 @@ const ItemForm = () => {
 
         const lowerText = String(text).toLowerCase();
 
-        /*
-         * Database unique constraint
-         * / serializer validation
-         */
+
 
         if (
           lowerText.includes("unique_inventory_item") ||
@@ -289,10 +221,6 @@ const ItemForm = () => {
         return String(text);
       }
 
-      /*
-       * Fabric error
-       */
-
       if (data.fabric) {
         const message = Array.isArray(data.fabric)
           ? data.fabric[0]
@@ -301,9 +229,6 @@ const ItemForm = () => {
         return `Fabric: ${message}`;
       }
 
-      /*
-       * Accessory error
-       */
 
       if (data.accessory) {
         const message = Array.isArray(data.accessory)
@@ -313,9 +238,6 @@ const ItemForm = () => {
         return `Accessory: ${message}`;
       }
 
-      /*
-       * Color error
-       */
 
       if (data.color) {
         const message = Array.isArray(data.color) ? data.color[0] : data.color;
@@ -323,9 +245,6 @@ const ItemForm = () => {
         return `Color: ${message}`;
       }
 
-      /*
-       * Unit error
-       */
 
       if (data.unit) {
         const message = Array.isArray(data.unit) ? data.unit[0] : data.unit;
@@ -333,9 +252,6 @@ const ItemForm = () => {
         return `Unit: ${message}`;
       }
 
-      /*
-       * is_active error
-       */
 
       if (data.is_active) {
         const message = Array.isArray(data.is_active)
@@ -345,9 +261,6 @@ const ItemForm = () => {
         return `Status: ${message}`;
       }
 
-      /*
-       * Generic object error
-       */
 
       const messages = Object.entries(data)
         .map(([field, value]) => {
@@ -362,9 +275,7 @@ const ItemForm = () => {
       }
     }
 
-    /*
-     * String error
-     */
+
 
     if (typeof data === "string") {
       return data;
@@ -378,10 +289,10 @@ const ItemForm = () => {
 
     clearMessages();
 
-    if (!formData.code.trim()) {
-      setErrorMessage("Item code is required.");
-      return;
-    }
+    // if (!formData.code.trim()) {
+    //   setErrorMessage("Item code is required.");
+    //   return;
+    // }
 
     if (!itemType) {
       setErrorMessage("Please select either Fabric or Accessory.");
@@ -408,11 +319,11 @@ const ItemForm = () => {
       return;
     }
 
-    if (!formData.code.trim()) {
-      setErrorMessage("Item code is required.");
+    // if (!formData.code.trim()) {
+    //   setErrorMessage("Item code is required.");
 
-      return;
-    }
+    //   return;
+    // }
 
     if (!itemType) {
       setErrorMessage("Please select either Fabric or Accessory.");
@@ -448,7 +359,7 @@ const ItemForm = () => {
       setSaving(true);
 
       const payload = {
-        code: formData.code.trim(),
+        // code: formData.code.trim(),
 
         fabric: itemType === "fabric" ? formData.fabric : null,
 
@@ -457,6 +368,7 @@ const ItemForm = () => {
         color: formData.color,
 
         unit: formData.unit,
+        quantity: formData.quantity,
 
         is_active: formData.is_active,
       };
@@ -477,10 +389,6 @@ const ItemForm = () => {
         setSuccessMessage("Inventory item created successfully.");
       }
 
-      /*
-       * Give user time to see success message
-       * before navigating.
-       */
 
       setTimeout(() => {
         navigate("/items");
@@ -547,7 +455,7 @@ const ItemForm = () => {
 
             <div className="form-grid">
 
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label>
                   Item Code <span>*</span>
                 </label>
@@ -561,7 +469,7 @@ const ItemForm = () => {
                   disabled={loading || saving}
                   required
                 />
-              </div>
+              </div> */}
 
               <div className="form-group">
                 <label>Status</label>
@@ -751,7 +659,31 @@ const ItemForm = () => {
                     </option>
                   ))}
                 </select>
+
               </div>
+              <div className="form-group">
+
+                            <label>
+                                Quantity
+                                <span>*</span>
+                            </label>
+
+                            <input
+                                type="number"
+                                name="quantity"
+                                value={formData.quantity}
+                                onChange={handleChange}
+                                placeholder="Enter quantity"
+                                min="0"
+                                step="0.01"
+                                disabled={
+                                    loading ||
+                                    saving
+                                }
+                            />
+
+                        </div>
+
             </div>
           </div>
 

@@ -16,7 +16,7 @@ class InventoryItemMetaSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "uuid",
-            "code",
+            # "code",
             "fabric",
             "accessory",
             "material_name",
@@ -55,11 +55,12 @@ class InventoryItemReadSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "uuid",
-            "code",
+            # "code",
             "fabric",
             "color",
             "unit",
             "accessory",
+            "quantity",
             "is_active",
         ]
 
@@ -71,12 +72,13 @@ class InventoryItemWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventoryItem
         fields = [
-            "code",
+            # "code",
             "fabric",
             "color",
             "unit",
             "accessory",
             "is_active",
+            "quantity"
         ]
 
 
@@ -94,11 +96,12 @@ class InventoryItemRetrieveSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "uuid",
-            "code",
+            # "code",
             "fabric_details",
             "color_details",
             "unit_details",
             "accessory_details",
+            "quantity",
             "is_active",
         ]
 

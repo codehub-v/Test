@@ -6,10 +6,10 @@ from apps.base.models import BaseModel
 
 class InventoryItem(BaseModel):
 
-    code = models.CharField(
-        max_length=100,
-        unique=True
-    )
+    # code = models.CharField(
+    #     max_length=100,
+    #     unique=True
+    # )
 
     fabric = models.ForeignKey(
         Fabric,
@@ -33,6 +33,11 @@ class InventoryItem(BaseModel):
     unit = models.ForeignKey(
         Unit,
         on_delete=models.PROTECT
+    )
+    quantity = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0
     )
 
     class Meta:

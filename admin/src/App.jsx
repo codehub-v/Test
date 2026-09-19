@@ -67,7 +67,7 @@ function App() {
                         <Route path="fabrics" element={<FabricList />} />
                         <Route path="seasons" element={<SeasonList />} />
                         <Route path="units" element={<UnitList />} />
-                        <Route path="accessories" element={<AccessoryList />} />
+                        <Route path="accessory" element={<AccessoryList />} />
 
                         <Route path="bom" element={<BOMList />} />
                         <Route path="bom/add" element={<BOMForm />} />

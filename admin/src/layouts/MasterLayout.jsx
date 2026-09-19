@@ -183,13 +183,13 @@ const MasterLayout = () => {
                         <Package size={18} />
                         <span>Items</span>
                     </NavLink>
-                    <NavLink
+                    {/* <NavLink
                         to="/stock"
                         className="menu-item"
                     >
                         <Package size={18} />
                         <span>Stock</span>
-                    </NavLink>
+                    </NavLink> */}
 
                     <NavLink
                         to="/stock-log"

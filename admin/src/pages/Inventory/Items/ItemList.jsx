@@ -278,7 +278,7 @@ const ItemList = () => {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Code</th>
+                {/* <th>Code</th> */}
                 <th>Fabric</th>
                 <th>Accessory</th>
                 <th>Color</th>
@@ -309,9 +309,9 @@ const ItemList = () => {
                       {(currentPage - 1) * 10 + index + 1}
                     </td>
 
-                    <td>
+                    {/* <td>
                       <span className="identity">{item.code}</span>
-                    </td>
+                    </td> */}
 
                     <td>{item.fabric || "-"}</td>
 
@@ -321,7 +321,7 @@ const ItemList = () => {
 
                     <td>{item.unit || "-"}</td>
 
-                    <td>{item.current_stock ?? 0}</td>
+                    <td>{item.quantity ?? 0}</td>
 
                     <td>
                       <span
