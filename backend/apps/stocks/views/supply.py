@@ -13,6 +13,7 @@ from apps.stocks.models import (
     SupplyOrder,
     SupplyOrderItem,
     InventoryItem,
+    StockTransaction,
 )
 
 from apps.stocks.serializers import (
@@ -37,6 +38,10 @@ class SupplyOrderViewSet(ModelViewSet):
 
         params = self.request.query_params
 
+        # -----------------------------
+        # Search
+        # -----------------------------
+
         search = params.get("search")
 
         if search:
@@ -45,12 +50,20 @@ class SupplyOrderViewSet(ModelViewSet):
                 | Q(supplier__identity__icontains=search)
             )
 
+        # -----------------------------
+        # Status filter
+        # -----------------------------
+
         status_filter = params.get("status")
 
         if status_filter:
             queryset = queryset.filter(
                 status=status_filter
             )
+
+        # -----------------------------
+        # Supplier filter
+        # -----------------------------
 
         supplier = params.get("supplier")
 
@@ -59,12 +72,20 @@ class SupplyOrderViewSet(ModelViewSet):
                 supplier_id=supplier
             )
 
+        # -----------------------------
+        # Exact order date
+        # -----------------------------
+
         order_date = params.get("order_date")
 
         if order_date:
             queryset = queryset.filter(
                 order_date=order_date
             )
+
+        # -----------------------------
+        # Date range
+        # -----------------------------
 
         order_date_from = params.get("order_date_from")
 
@@ -82,6 +103,7 @@ class SupplyOrderViewSet(ModelViewSet):
 
         return queryset
 
+
     def get_serializer_class(self):
 
         if self.action == "list":
@@ -92,6 +114,7 @@ class SupplyOrderViewSet(ModelViewSet):
 
         return SupplyOrderWriteSerializer
 
+
     @action(
         detail=True,
         methods=["post"],
@@ -101,86 +124,95 @@ class SupplyOrderViewSet(ModelViewSet):
 
         with transaction.atomic():
 
-            # Lock the supply order
             try:
                 supply_order = (
                     SupplyOrder.objects
                     .select_for_update()
                     .get(pk=pk)
                 )
+
             except SupplyOrder.DoesNotExist:
+
                 raise ValidationError(
                     "Supply order not found."
                 )
 
-            # Cannot receive cancelled or completely received order
+
             if supply_order.status == "cancelled":
+
                 raise ValidationError(
                     "Cannot receive stock for a cancelled order."
                 )
 
-            if supply_order.status == "received":
-                raise ValidationError(
-                    "This supply order has already been completely received."
-                )
 
-            items_data = request.data.get("items", [])
+            items_data = request.data.get(
+                "items",
+                []
+            )
 
             if not items_data:
+
                 raise ValidationError(
                     "At least one item is required."
                 )
 
             received_item_ids = set()
 
+
             for data in items_data:
 
                 item_id = data.get("item_id")
                 quantity = data.get("quantity")
 
-                # -----------------------------
-                # Validate item ID
-                # -----------------------------
 
                 if not item_id:
+
                     raise ValidationError(
                         "item_id is required."
                     )
 
+
                 if item_id in received_item_ids:
+
                     raise ValidationError(
                         f"Item {item_id} is duplicated."
                     )
 
                 received_item_ids.add(item_id)
 
-                # -----------------------------
-                # Validate quantity
-                # -----------------------------
 
                 if quantity is None:
+
                     raise ValidationError(
                         f"Quantity is required for item {item_id}."
                     )
 
                 try:
-                    quantity = Decimal(str(quantity))
-                except (InvalidOperation, ValueError, TypeError):
+
+                    quantity = Decimal(
+                        str(quantity)
+                    )
+
+                except (
+                    InvalidOperation,
+                    ValueError,
+                    TypeError,
+                ):
+
                     raise ValidationError(
                         f"Invalid quantity for item {item_id}."
                     )
 
                 if quantity <= 0:
+
                     raise ValidationError(
                         f"Receive quantity must be greater than zero "
                         f"for item {item_id}."
                     )
-
-                # -----------------------------
-                # Get and lock supply item
-                # -----------------------------
+            
 
                 try:
+
                     item = (
                         SupplyOrderItem.objects
                         .select_for_update()
@@ -195,14 +227,13 @@ class SupplyOrderViewSet(ModelViewSet):
                             supply_order=supply_order,
                         )
                     )
+
                 except SupplyOrderItem.DoesNotExist:
+
                     raise ValidationError(
                         f"Supply order item {item_id} not found."
                     )
 
-                # -----------------------------
-                # Remaining quantity
-                # -----------------------------
 
                 remaining_quantity = (
                     item.ordered_quantity
@@ -210,19 +241,19 @@ class SupplyOrderViewSet(ModelViewSet):
                 )
 
                 if remaining_quantity <= 0:
+
                     raise ValidationError(
                         f"Item {item.id} has already been fully received."
                     )
 
+
                 if quantity > remaining_quantity:
+
                     raise ValidationError(
                         f"Only {remaining_quantity} is remaining "
                         f"for item {item.id}."
                     )
 
-                # -----------------------------
-                # Update received quantity
-                # -----------------------------
 
                 item.received_quantity += quantity
 
@@ -231,11 +262,6 @@ class SupplyOrderViewSet(ModelViewSet):
                         "received_quantity",
                     ]
                 )
-
-                # -----------------------------
-                # Find inventory item
-                # -----------------------------
-
                 inventory_filter = {
                     "color": item.color,
                     "unit": item.unit,
@@ -248,6 +274,7 @@ class SupplyOrderViewSet(ModelViewSet):
                         "accessory": None,
                     })
 
+
                 elif item.accessory:
 
                     inventory_filter.update({
@@ -256,14 +283,12 @@ class SupplyOrderViewSet(ModelViewSet):
                     })
 
                 else:
+
                     raise ValidationError(
                         f"Supply order item {item.id} "
                         f"has no fabric or accessory."
                     )
 
-                # -----------------------------
-                # Get inventory item
-                # -----------------------------
 
                 inventory = (
                     InventoryItem.objects
@@ -272,11 +297,6 @@ class SupplyOrderViewSet(ModelViewSet):
                     .first()
                 )
 
-                # -----------------------------
-                # Create inventory item
-                # if it doesn't exist
-                # -----------------------------
-
                 if not inventory:
 
                     inventory = InventoryItem.objects.create(
@@ -284,9 +304,18 @@ class SupplyOrderViewSet(ModelViewSet):
                         quantity=quantity,
                     )
 
-                # -----------------------------
-                # Increase existing inventory
-                # -----------------------------
+                    StockTransaction.objects.create(
+                        item=inventory,
+                        transaction_in=quantity,
+                        transaction_out=0,
+                        quantity=quantity,
+                        notes=(
+                            f"Stock received from "
+                            f"Supply Order "
+                            f"{supply_order.order_number}"
+                        ),
+                    )
+
 
                 else:
 
@@ -295,17 +324,32 @@ class SupplyOrderViewSet(ModelViewSet):
                     )
 
                     inventory.save(
-                        update_fields=["quantity"]
+                        update_fields=[
+                            "quantity",
+                        ]
                     )
 
-            # -----------------------------
-            # Update Supply Order status
-            # -----------------------------
+
+                    StockTransaction.objects.create(
+                        item=inventory,
+                        transaction_in=quantity,
+                        transaction_out=0,
+                        quantity=quantity,
+                        notes=(
+                            f"Stock received from "
+                            f"Supply Order "
+                            f"{supply_order.order_number}"
+                        ),
+                    )
+
 
             supply_order_items = (
                 SupplyOrderItem.objects
-                .filter(supply_order=supply_order)
+                .filter(
+                    supply_order=supply_order
+                )
             )
+
 
             all_received = all(
                 item.received_quantity
@@ -313,10 +357,12 @@ class SupplyOrderViewSet(ModelViewSet):
                 for item in supply_order_items
             )
 
+
             any_received = any(
                 item.received_quantity > 0
                 for item in supply_order_items
             )
+
 
             if all_received:
 
