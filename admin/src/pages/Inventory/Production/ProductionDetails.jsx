@@ -35,7 +35,7 @@ const ProductionDetails = () => {
       setError(
         err.response?.data?.detail ||
           err.response?.data?.message ||
-          "Failed to load production order."
+          "Failed to load production order.",
       );
     } finally {
       setLoading(false);
@@ -84,10 +84,7 @@ const ProductionDetails = () => {
     return (
       <div className="production-details-page">
         <div className="production-details-header">
-          <button
-            className="back-button"
-            onClick={() => navigate("/orders")}
-          >
+          <button className="back-button" onClick={() => navigate("/orders")}>
             <ArrowLeft size={18} />
           </button>
 
@@ -97,9 +94,7 @@ const ProductionDetails = () => {
           </div>
         </div>
 
-        <div className="production-error">
-          {error}
-        </div>
+        <div className="production-error">{error}</div>
       </div>
     );
   }
@@ -112,10 +107,7 @@ const ProductionDetails = () => {
     <div className="production-details-page">
       <div className="production-details-header">
         <div className="production-header-left">
-          <button
-            className="back-button"
-            onClick={() => navigate("/orders")}
-          >
+          <button className="back-button" onClick={() => navigate("/orders")}>
             <ArrowLeft size={18} />
           </button>
 
@@ -145,7 +137,7 @@ const ProductionDetails = () => {
 
             <span
               className={`production-status ${getStatusClass(
-                production.status
+                production.status,
               )}`}
             >
               <span className="status-dot"></span>
@@ -186,23 +178,21 @@ const ProductionDetails = () => {
             </span>
           </div>
           <div className="info-item">
-  <span className="info-label">Customer</span>
-  <span className="info-value">
-    {production.customer_details?.identity || "-"}
-  </span>
-</div>
+            <span className="info-label">Customer</span>
+            <span className="info-value">
+              {production.customer_details?.identity || "-"}
+            </span>
+          </div>
           <div className="info-item">
-  <span className="info-label">Customer Phone Number</span>
-  <span className="info-value">
-    {production.customer_details?.phone || "-"}
-  </span>
-</div>
+            <span className="info-label">Customer Phone Number</span>
+            <span className="info-value">
+              {production.customer_details?.phone || "-"}
+            </span>
+          </div>
 
           <div className="info-item">
             <span className="info-label">Quantity</span>
-            <span className="info-value">
-              {production.quantity ?? "-"}
-            </span>
+            <span className="info-value">{production.quantity ?? "-"}</span>
           </div>
 
           <div className="info-item">
@@ -214,9 +204,7 @@ const ProductionDetails = () => {
 
           <div className="info-item">
             <span className="info-label">Status</span>
-            <span className="info-value">
-              {getStatusLabel(production)}
-            </span>
+            <span className="info-value">{getStatusLabel(production)}</span>
           </div>
         </div>
       </div>
@@ -278,119 +266,111 @@ const ProductionDetails = () => {
         </div>
       </div>
       <div className="production-card">
-  <div className="production-card-header">
-    <div className="card-header-icon">
-      <Package size={17} />
-    </div>
+        <div className="production-card-header">
+          <div className="card-header-icon">
+            <Package size={17} />
+          </div>
 
-    <div>
-      <h3>Material Availability</h3>
-      <p>
-        Check whether all BOM materials are available for cutting
-      </p>
-    </div>
-  </div>
+          <div>
+            <h3>Material Availability</h3>
+            <p>Check whether all BOM materials are available for cutting</p>
+          </div>
+        </div>
 
-  <div className="material-summary">
-    <div
-      className={`material-readiness ${
-        production.material_availability?.can_start_cutting
-          ? "ready"
-          : "not-ready"
-      }`}
-    >
-      {production.material_availability?.can_start_cutting ? (
-        <CheckCircle2 size={19} />
-      ) : (
-        <AlertTriangle size={19} />
-      )}
+        <div className="material-summary">
+          <div
+            className={`material-readiness ${
+              production.material_availability?.can_start_cutting
+                ? "ready"
+                : "not-ready"
+            }`}
+          >
+            {production.material_availability?.can_start_cutting ? (
+              <CheckCircle2 size={19} />
+            ) : (
+              <AlertTriangle size={19} />
+            )}
 
-      <div>
-        <strong>
-          {production.material_availability?.can_start_cutting
-            ? "Ready for Cutting"
-            : "Not Ready for Cutting"}
-        </strong>
+            <div>
+              <strong>
+                {production.material_availability?.can_start_cutting
+                  ? "Ready for Cutting"
+                  : "Not Ready for Cutting"}
+              </strong>
 
-        <span>
-          {production.material_availability?.available_items || 0}
-          {" / "}
-          {production.material_availability?.total_items || 0}
-          {" materials available"}
-        </span>
+              <span>
+                {production.material_availability?.available_items || 0}
+                {" / "}
+                {production.material_availability?.total_items || 0}
+                {" materials available"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="material-table-wrapper">
+          <table className="material-table">
+            <thead>
+              <tr>
+                <th>Material</th>
+                <th>Type</th>
+                <th>Color</th>
+                <th>Unit</th>
+                <th>Required</th>
+                <th>Available</th>
+                <th>Shortage</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {production.material_availability?.materials?.length > 0 ? (
+                production.material_availability.materials.map((material) => (
+                  <tr key={material.bom_item_id}>
+                    <td>
+                      <strong>{material.material_name}</strong>
+                    </td>
+
+                    <td>{material.material_type}</td>
+
+                    <td>{material.color}</td>
+
+                    <td>{material.unit}</td>
+
+                    <td>{material.required_quantity}</td>
+
+                    <td>{material.available_quantity}</td>
+
+                    <td>
+                      {material.shortage_quantity > 0
+                        ? material.shortage_quantity
+                        : "-"}
+                    </td>
+
+                    <td>
+                      <span
+                        className={`material-status ${
+                          material.is_available
+                            ? "material-available"
+                            : "material-insufficient"
+                        }`}
+                      >
+                        {material.is_available ? "Available" : "Insufficient"}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" className="material-empty">
+                    No BOM materials found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  </div>
-
-  <div className="material-table-wrapper">
-    <table className="material-table">
-      <thead>
-        <tr>
-          <th>Material</th>
-          <th>Type</th>
-          <th>Color</th>
-          <th>Unit</th>
-          <th>Required</th>
-          <th>Available</th>
-          <th>Shortage</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {production.material_availability?.materials?.length > 0 ? (
-          production.material_availability.materials.map((material) => (
-            <tr key={material.bom_item_id}>
-              <td>
-                <strong>{material.material_name}</strong>
-              </td>
-
-              <td>{material.material_type}</td>
-
-              <td>{material.color}</td>
-
-              <td>{material.unit}</td>
-
-              <td>
-                {material.required_quantity}
-              </td>
-
-              <td>
-                {material.available_quantity}
-              </td>
-
-              <td>
-                {material.shortage_quantity > 0
-                  ? material.shortage_quantity
-                  : "-"}
-              </td>
-
-              <td>
-                <span
-                  className={`material-status ${
-                    material.is_available
-                      ? "material-available"
-                      : "material-insufficient"
-                  }`}
-                >
-                  {material.is_available
-                    ? "Available"
-                    : "Insufficient"}
-                </span>
-              </td>
-            </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan="8" className="material-empty">
-              No BOM materials found.
-            </td>
-          </tr>
-        )}
-      </tbody>
-    </table>
-  </div>
-</div>
 
       <div className="production-card">
         <div className="production-card-header">
