@@ -40,6 +40,7 @@ import SupplyDetails from "./pages/Inventory/Supply/SupplyDetails";
 import ProductionList from "./pages/Inventory/Production/ProductionList";
 import ProductionForm from "./pages/Inventory/Production/ProductionForm";
 import ProductionDetails from "./pages/Inventory/Production/ProductionDetails";
+import Reports from "./pages/Reports";
 
 function App() {
     return (
@@ -52,6 +53,7 @@ function App() {
                     <Route element={<MasterLayout />}>
 
                         <Route path="/" element={<Home />} />
+                        <Route path="reports" element={<Reports />} />
 
                         <Route path="colors" element={<ColorList />} />
 

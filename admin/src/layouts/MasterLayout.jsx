@@ -232,7 +232,7 @@ const MasterLayout = () => {
                         className="menu-item"
                         title="Supply Order"
                     >
-                        <ArrowDownUp size={17} />
+                        <Truck  size={17} />
                         {!collapsed && <span>Supply Order</span>}
                     </NavLink>
 

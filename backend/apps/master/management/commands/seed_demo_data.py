@@ -494,7 +494,7 @@ class Command(BaseCommand):
 
         statuses = [
             "ordered",
-            "recieved",
+            "received",
         ]
 
         for index in range(15):
@@ -523,7 +523,7 @@ class Command(BaseCommand):
                     "ordered_quantity": Decimal("500.00"),
                     "received_quantity": (
                         Decimal("500.00")
-                        if order.status == "RECEIVED"
+                        if order.status == "received"
                         else Decimal("0.00")
                     ),
                 },
@@ -539,7 +539,7 @@ class Command(BaseCommand):
                     "ordered_quantity": Decimal("1000.00"),
                     "received_quantity": (
                         Decimal("1000.00")
-                        if order.status == "RECEIVED"
+                        if order.status == "received"
                         else Decimal("0.00")
                     ),
                 },

@@ -7,7 +7,7 @@ from apps.users.views import (
     UserProfile,
     UserViewSet,DashboardAPIView
 )
-
+from apps.users.views.reports import InventoryReportAPIView, ProductionReportAPIView, SupplyOrderReportAPIView
 
 router = DefaultRouter()
 
@@ -23,6 +23,21 @@ urlpatterns = [
     path("logout/", LogoutAPI.as_view(), name="logout"),
     path("profile/", UserProfile.as_view(), name="profile"),
     path("dashboard/", DashboardAPIView.as_view(), name="dashboard"),
+        path(
+        "report/inventory/",
+        InventoryReportAPIView.as_view(),
+        name="inventory-report",
+    ),
+    path(
+        "report/supply-orders/",
+        SupplyOrderReportAPIView.as_view(),
+        name="supply-order-report",
+    ),
+    path(
+        "report/production/",
+        ProductionReportAPIView.as_view(),
+        name="production-report",
+    ),
 
     path("", include(router.urls)),
 ]
