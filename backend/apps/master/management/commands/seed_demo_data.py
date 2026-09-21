@@ -71,6 +71,7 @@ class Command(BaseCommand):
 
         production_orders = self.create_production_orders(
             boms=boms,
+            customers=customers,
         )
 
         self.stdout.write(
@@ -570,7 +571,7 @@ class Command(BaseCommand):
                 notes="Initial demo stock",
             )
 
-    def create_production_orders(self, boms):
+    def create_production_orders(self, boms, customers):
 
         production_orders = []
 
@@ -592,6 +593,7 @@ class Command(BaseCommand):
                 production_no=f"PROD-{index + 1:05d}",
                 defaults={
                     "product": boms[index],
+                    "customer": customers[index],
                     "quantity": 100 + (index * 25),
                     "production_line": (
                         f"Production Line {(index % 5) + 1}"

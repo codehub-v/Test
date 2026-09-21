@@ -3,6 +3,7 @@ from django.utils import timezone
 
 from apps.master.models import BOM
 from apps.base.models import BaseModel
+from apps.master.models import Customer
 
 
 class ProductionOrder(BaseModel):
@@ -42,6 +43,11 @@ class ProductionOrder(BaseModel):
     cutting_date = models.DateField(
         null=True,
         blank=True
+    )
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.PROTECT,
+        related_name="production_orders"
     )
 
     stitching_date = models.DateField(

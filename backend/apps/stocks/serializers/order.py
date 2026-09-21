@@ -1,6 +1,15 @@
-from rest_framework import serializers
 
-from apps.stocks.models import ProductionOrder
+
+
+from decimal import Decimal
+
+
+from apps.stocks.models import (
+    ProductionOrder,
+    InventoryItem,
+)
+
+from rest_framework import serializers
 
 
 class ProductionOrderSerializer(serializers.ModelSerializer):
@@ -10,11 +19,18 @@ class ProductionOrderSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
+    customer_name = serializers.CharField(
+        source="customer.identity",
+        read_only=True
+    )
+
     class Meta:
         model = ProductionOrder
         fields = [
             "id",
             "production_no",
+            "customer",
+            "customer_name",
             "product",
             "product_name",
             "quantity",
@@ -23,7 +39,6 @@ class ProductionOrderSerializer(serializers.ModelSerializer):
             "created_at",
             "completed_date",
             "remarks",
-            "created_at",
             "updated_at",
         ]
 
@@ -41,12 +56,14 @@ class ProductionOrderSerializer(serializers.ModelSerializer):
 
         return value
 
+
 class ProductionOrderWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductionOrder
         fields = [
             "production_no",
+            "customer",
             "product",
             "quantity",
             "production_line",
@@ -63,25 +80,16 @@ class ProductionOrderWriteSerializer(serializers.ModelSerializer):
         return value
 
 
-
-
-
-from decimal import Decimal
-
-
-from apps.stocks.models import (
-    ProductionOrder,
-    InventoryItem,
-)
-
-
 class ProductionOrderRetrieveSerializer(serializers.ModelSerializer):
 
+    customer_details = serializers.SerializerMethodField()
     product_details = serializers.SerializerMethodField()
+
     status_display = serializers.CharField(
         source="get_status_display",
         read_only=True
     )
+
     material_availability = serializers.SerializerMethodField()
 
     class Meta:
@@ -90,22 +98,38 @@ class ProductionOrderRetrieveSerializer(serializers.ModelSerializer):
             "id",
             "uuid",
             "production_no",
+
+            "customer_details",
+
             "product_details",
             "quantity",
             "production_line",
             "status",
             "status_display",
+
             "cutting_date",
             "stitching_date",
             "sewing_date",
             "finishing_date",
             "completed_date",
             "cancelled_date",
+
             "remarks",
             "material_availability",
+
             "created_at",
             "updated_at",
         ]
+
+    def get_customer_details(self, obj):
+        customer = obj.customer
+
+        return {
+            "id": customer.id,
+            "uuid": str(customer.uuid),
+            "identity": customer.identity,
+            "phone": customer.phone,
+        }
 
     def get_product_details(self, obj):
         product = obj.product
@@ -142,6 +166,7 @@ class ProductionOrderRetrieveSerializer(serializers.ModelSerializer):
             }
 
             if item.fabric_id:
+
                 inventory_filter["fabric_id"] = item.fabric_id
                 inventory_filter["accessory__isnull"] = True
 
@@ -149,6 +174,7 @@ class ProductionOrderRetrieveSerializer(serializers.ModelSerializer):
                 material_type = "Fabric"
 
             elif item.accessory_id:
+
                 inventory_filter["accessory_id"] = item.accessory_id
                 inventory_filter["fabric__isnull"] = True
 
@@ -200,15 +226,14 @@ class ProductionOrderRetrieveSerializer(serializers.ModelSerializer):
             "can_start_cutting": all_available,
             "total_items": len(materials),
             "available_items": sum(
-                1 for item in materials
+                1
+                for item in materials
                 if item["is_available"]
             ),
             "insufficient_items": sum(
-                1 for item in materials
+                1
+                for item in materials
                 if not item["is_available"]
             ),
             "materials": materials,
         }
-
-
-    

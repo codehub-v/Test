@@ -185,6 +185,18 @@ const ProductionDetails = () => {
                 "-"}
             </span>
           </div>
+          <div className="info-item">
+  <span className="info-label">Customer</span>
+  <span className="info-value">
+    {production.customer_details?.identity || "-"}
+  </span>
+</div>
+          <div className="info-item">
+  <span className="info-label">Customer Phone Number</span>
+  <span className="info-value">
+    {production.customer_details?.phone || "-"}
+  </span>
+</div>
 
           <div className="info-item">
             <span className="info-label">Quantity</span>

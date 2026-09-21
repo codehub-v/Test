@@ -365,6 +365,7 @@ const ProductionList = () => {
                 <th style={styles.th}>Production No</th>
 
                 <th style={styles.th}>Product</th>
+                <th style={styles.th}>Customer Info</th>
 
                 <th style={styles.th}>Quantity</th>
 
@@ -418,6 +419,9 @@ const ProductionList = () => {
 
                       <td style={styles.td}>
                         {production.product_name || "-"}
+                      </td>
+                      <td style={styles.td}>
+                        {production.customer_name || "-"}
                       </td>
 
                       <td style={styles.td}>{production.quantity}</td>
