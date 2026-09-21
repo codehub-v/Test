@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { ArrowLeft, Pencil, Factory, Package, CalendarDays } from "lucide-react";
+import {
+  ArrowLeft,
+  Pencil,
+  Factory,
+  Package,
+  CalendarDays,
+  CheckCircle2,
+  AlertTriangle,
+} from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../apis/base";
 import "./ProductionDetails.css";
@@ -257,6 +265,120 @@ const ProductionDetails = () => {
           </div>
         </div>
       </div>
+      <div className="production-card">
+  <div className="production-card-header">
+    <div className="card-header-icon">
+      <Package size={17} />
+    </div>
+
+    <div>
+      <h3>Material Availability</h3>
+      <p>
+        Check whether all BOM materials are available for cutting
+      </p>
+    </div>
+  </div>
+
+  <div className="material-summary">
+    <div
+      className={`material-readiness ${
+        production.material_availability?.can_start_cutting
+          ? "ready"
+          : "not-ready"
+      }`}
+    >
+      {production.material_availability?.can_start_cutting ? (
+        <CheckCircle2 size={19} />
+      ) : (
+        <AlertTriangle size={19} />
+      )}
+
+      <div>
+        <strong>
+          {production.material_availability?.can_start_cutting
+            ? "Ready for Cutting"
+            : "Not Ready for Cutting"}
+        </strong>
+
+        <span>
+          {production.material_availability?.available_items || 0}
+          {" / "}
+          {production.material_availability?.total_items || 0}
+          {" materials available"}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div className="material-table-wrapper">
+    <table className="material-table">
+      <thead>
+        <tr>
+          <th>Material</th>
+          <th>Type</th>
+          <th>Color</th>
+          <th>Unit</th>
+          <th>Required</th>
+          <th>Available</th>
+          <th>Shortage</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {production.material_availability?.materials?.length > 0 ? (
+          production.material_availability.materials.map((material) => (
+            <tr key={material.bom_item_id}>
+              <td>
+                <strong>{material.material_name}</strong>
+              </td>
+
+              <td>{material.material_type}</td>
+
+              <td>{material.color}</td>
+
+              <td>{material.unit}</td>
+
+              <td>
+                {material.required_quantity}
+              </td>
+
+              <td>
+                {material.available_quantity}
+              </td>
+
+              <td>
+                {material.shortage_quantity > 0
+                  ? material.shortage_quantity
+                  : "-"}
+              </td>
+
+              <td>
+                <span
+                  className={`material-status ${
+                    material.is_available
+                      ? "material-available"
+                      : "material-insufficient"
+                  }`}
+                >
+                  {material.is_available
+                    ? "Available"
+                    : "Insufficient"}
+                </span>
+              </td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="8" className="material-empty">
+              No BOM materials found.
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+  </div>
+</div>
 
       <div className="production-card">
         <div className="production-card-header">
