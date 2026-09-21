@@ -201,3 +201,12 @@ class ProductionOrderViewSet(ModelViewSet):
                     f"{production.production_no}"
                 ),
             )
+            
+            
+class ProductionOrderMetaViewSet(ModelViewSet):
+    pagination_class=None
+    queryset = ProductionOrder.objects.filter(status = "COMPLETED")
+
+    def get_serializer_class(self):
+
+        return ProductionOrderSerializer

@@ -41,6 +41,9 @@ import ProductionList from "./pages/Inventory/Production/ProductionList";
 import ProductionForm from "./pages/Inventory/Production/ProductionForm";
 import ProductionDetails from "./pages/Inventory/Production/ProductionDetails";
 import Reports from "./pages/Reports";
+import DeliveryList from "./pages/Inventory/Delivery/DeliveryList";
+import DeliveryForm from "./pages/Inventory/Delivery/DeliveryForm";
+import DeliveryDetails from "./pages/Inventory/Delivery/DeliveryDetails";
 
 function App() {
     return (
@@ -101,6 +104,11 @@ function App() {
                         <Route path="orders/add" element={<ProductionForm />} /> 
                         <Route path="orders/add/:id" element={<ProductionForm />} /> 
                         <Route path="orders/detials/:id" element={<ProductionDetails />} /> 
+
+                        <Route path="deliveries" element={<DeliveryList />} /> 
+                        <Route path="deliveries/add" element={<DeliveryForm />} /> 
+                        <Route path="deliveries/add/:id" element={<DeliveryForm />} /> 
+                        <Route path="deliveries/details/:id" element={<DeliveryDetails />} /> 
                     </Route>
                 </Route>
 

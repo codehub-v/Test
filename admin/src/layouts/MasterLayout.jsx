@@ -248,6 +248,14 @@ const MasterLayout = () => {
                         <ClipboardList size={17} />
                         {!collapsed && <span>Production Orders</span>}
                     </NavLink>
+                    <NavLink
+                        to="/deliveries"
+                        className="menu-item"
+                        title="Delivery"
+                    >
+                        <Truck size={17} />
+                        {!collapsed && <span>Delivery</span>}
+                    </NavLink>
 
                     <div className="menu-section">
                         REPORTS

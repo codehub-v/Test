@@ -6,7 +6,9 @@ from apps.stocks.views import (
     StockItemViewSet,
     StockTransactionViewSet,
     SupplyOrderViewSet,
-    ProductionOrderViewSet
+    ProductionOrderViewSet,
+    ProductionOrderMetaViewSet,
+    DeliveryViewSet,
 )
 
 router = DefaultRouter()
@@ -38,12 +40,22 @@ router.register(
     ProductionOrderViewSet,
     basename="order"
 )
+router.register(
+    r"delivery",
+    DeliveryViewSet,
+    basename="order-delivery",
+)
 
 # Meta
 router.register(
     "meta/items",
     InventoryItemMeta,
     basename="meta-inventory-item"
+)
+router.register(
+    "meta/order",
+    ProductionOrderMetaViewSet,
+    basename="meta-inventory-order"
 )
 
 urlpatterns = router.urls
