@@ -15,13 +15,32 @@ from apps.stocks.serializers import (
     ProductionOrderRetrieveSerializer,
     ProductionOrderWriteSerializer,
 )
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 
 class ProductionOrderViewSet(ModelViewSet):
 
     queryset = ProductionOrder.objects.select_related(
         "product"
     ).all()
+    filter_backends = [
+        SearchFilter,
+        DjangoFilterBackend,
+    ]
+
+    search_fields = [
+        "production_no",
+        "product__bom_number",
+        "product__identity",
+        "production_line",
+    ]
+
+    filterset_fields = [
+        "status",
+        "production_line",
+        "product",
+    ]
+
 
     def get_serializer_class(self):
 

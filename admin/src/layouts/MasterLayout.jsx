@@ -115,14 +115,14 @@ const MasterLayout = () => {
                         MASTER DATA
                     </div>
 
-                    <NavLink
+                    {/* <NavLink
                         to="/customers"
                         className="menu-item"
                         title="Customers"
                     >
                         <Users size={17} />
                         {!collapsed && <span>Customers</span>}
-                    </NavLink>
+                    </NavLink> */}
 
                     <NavLink
                         to="/suppliers"

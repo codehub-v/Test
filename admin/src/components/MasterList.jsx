@@ -30,7 +30,7 @@ const MasterList = ({
     loading = false,
     emptyMessage = "No records found",
     showStatus = true,
-    showDelete = true,
+    showDelete = false,
 }) => {
 
     const handleClear = () => {

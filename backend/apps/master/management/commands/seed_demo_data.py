@@ -493,11 +493,8 @@ class Command(BaseCommand):
         orders = []
 
         statuses = [
-            "WAITING",
-            "WAITING",
-            "ORDERED",
-            "ORDERED",
-            "RECEIVED",
+            "ordered",
+            "recieved",
         ]
 
         for index in range(15):

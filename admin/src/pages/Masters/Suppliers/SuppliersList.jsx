@@ -472,7 +472,7 @@ const SuppliersList = () => {
                                                 </button>
 
 
-                                                {/* Delete */}
+                                                {/* Delete 
                                                 <button
                                                     onClick={() =>
                                                         handleDelete(
@@ -486,7 +486,7 @@ const SuppliersList = () => {
                                                     title="Delete"
                                                 >
                                                     <Trash2 size={15} />
-                                                </button>
+                                                </button>*/}
 
                                             </div>
 
