@@ -2,4 +2,4 @@ from .inventory_item import InventoryItemReadSerializer, InventoryItemWriteSeria
 from .stock_item import StockItemReadSerializer, StockItemWriteSerializer
 from .stock_log import StockTransactionReadSerializer, StockTransactionWriteSerializer
 from .supply import SupplyOrderItemReadSerializer, SupplyOrderItemWriteSerializer, SupplyOrderListSerializer, SupplyOrderRetrieveSerializer, SupplyOrderWriteSerializer
-from .order import ProductionOrderSerializer
+from .order import ProductionOrderSerializer, ProductionOrderWriteSerializer, ProductionOrderRetrieveSerializer

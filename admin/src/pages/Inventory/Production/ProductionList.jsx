@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
     Search,
@@ -7,15 +6,15 @@ import {
     Eye,
     X,
     Play,
+    Ban,
+    AlertTriangle,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import Pagination from "../../../components/Pagination";
 import api from "../../../apis/base";
 
-
 const ProductionList = () => {
-
     const navigate = useNavigate();
 
     const [data, setData] = useState([]);
@@ -28,11 +27,17 @@ const ProductionList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
+    const [showStatusModal, setShowStatusModal] =
+        useState(false);
+
+    const [selectedProduction, setSelectedProduction] =
+        useState(null);
+
+    const [updatingStatus, setUpdatingStatus] =
+        useState(false);
 
     const fetchProductions = async () => {
-
         try {
-
             setLoading(true);
 
             const params = {
@@ -65,9 +70,7 @@ const ProductionList = () => {
                     (response.data.count || 0) / 10
                 )
             );
-
         } catch (error) {
-
             console.error(
                 "Error fetching production orders:",
                 error
@@ -75,20 +78,13 @@ const ProductionList = () => {
 
             setData([]);
             setTotalPages(1);
-
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
-
     useEffect(() => {
-
         fetchProductions();
-
     }, [
         currentPage,
         search,
@@ -96,61 +92,114 @@ const ProductionList = () => {
         productionLine,
     ]);
 
-
     const handleClear = () => {
-
         setSearch("");
         setStatus("");
         setProductionLine("");
         setCurrentPage(1);
-
     };
-
 
     const handleView = (id) => {
-
         navigate(`/orders/detials/${id}`);
-
     };
-
 
     const handleEdit = (id) => {
-
         navigate(`/orders/add/${id}`);
-
     };
 
+    const statusFlow = {
+        WAITING: "CUTTING",
+        CUTTING: "STITCHING",
+        STITCHING: "SEWING",
+        SEWING: "FINISHING",
+        FINISHING: "COMPLETED",
+    };
 
-    const handleStart = async (id) => {
+    const getNextStatus = (currentStatus) => {
+        return statusFlow[currentStatus] || null;
+    };
+
+    const handleStatusClick = (production) => {
+        const nextStatus = getNextStatus(
+            production.status
+        );
+
+        if (!nextStatus) {
+            return;
+        }
+
+        setSelectedProduction({
+            ...production,
+            nextStatus,
+            action: "progress",
+        });
+
+        setShowStatusModal(true);
+    };
+
+    const handleCancelClick = (production) => {
+        if (
+            production.status === "COMPLETED" ||
+            production.status === "CANCELLED"
+        ) {
+            return;
+        }
+
+        setSelectedProduction({
+            ...production,
+            nextStatus: "CANCELLED",
+            action: "cancel",
+        });
+
+        setShowStatusModal(true);
+    };
+
+    const closeStatusModal = () => {
+        if (updatingStatus) {
+            return;
+        }
+
+        setShowStatusModal(false);
+        setSelectedProduction(null);
+    };
+
+    const confirmStatusUpdate = async () => {
+        if (!selectedProduction) {
+            return;
+        }
 
         try {
+            setUpdatingStatus(true);
 
-            await api.post(
-                `inventory/order/${id}/start/`
+            await api.patch(
+                `inventory/order/${selectedProduction.id}/`,
+                {
+                    status:
+                        selectedProduction.nextStatus,
+                }
             );
 
+            setShowStatusModal(false);
+            setSelectedProduction(null);
+
             fetchProductions();
-
         } catch (error) {
-
             console.error(
-                "Error starting production:",
+                "Error updating production status:",
                 error
             );
 
             alert(
                 error.response?.data?.detail ||
-                error.response?.data?.message ||
-                "Unable to start production."
+                    error.response?.data?.message ||
+                    "Unable to update production status."
             );
-
+        } finally {
+            setUpdatingStatus(false);
         }
-
     };
 
-
     const getStatusLabel = (status) => {
-
         const labels = {
             WAITING: "Waiting",
             CUTTING: "Cutting",
@@ -158,17 +207,14 @@ const ProductionList = () => {
             SEWING: "Sewing",
             FINISHING: "Finishing",
             COMPLETED: "Completed",
+            CANCELLED: "Cancelled",
         };
 
         return labels[status] || status || "-";
-
     };
 
-
     const getStatusStyle = (status) => {
-
         const styles = {
-
             WAITING: {
                 backgroundColor: "#fff7ed",
                 color: "#c2410c",
@@ -205,37 +251,38 @@ const ProductionList = () => {
                 dot: "#22c55e",
             },
 
+            CANCELLED: {
+                backgroundColor: "#fef2f2",
+                color: "#dc2626",
+                dot: "#ef4444",
+            },
         };
 
-        return styles[status] || {
-            backgroundColor: "#f8fafc",
-            color: "#64748b",
-            dot: "#94a3b8",
-        };
-
+        return (
+            styles[status] || {
+                backgroundColor: "#f8fafc",
+                color: "#64748b",
+                dot: "#94a3b8",
+            }
+        );
     };
 
-
     return (
-
         <div style={styles.page}>
 
             {/* Header */}
 
             <div style={styles.header}>
-
                 <div style={styles.titleSection}>
-
                     <h2 style={styles.title}>
                         Production
                     </h2>
 
                     <p style={styles.subtitle}>
-                        Manage production orders and track production status
+                        Manage production orders and track
+                        production status
                     </p>
-
                 </div>
-
 
                 <button
                     onClick={() =>
@@ -243,30 +290,21 @@ const ProductionList = () => {
                     }
                     style={styles.addButton}
                 >
-
                     <Plus size={18} />
-
                     Add Production
-
                 </button>
-
             </div>
-
 
             {/* Filter Card */}
 
             <div style={styles.filterCard}>
 
-                {/* Search */}
-
                 <div style={styles.filterGroup}>
-
                     <label style={styles.filterLabel}>
                         Search
                     </label>
 
                     <div style={styles.searchWrapper}>
-
                         <Search
                             size={17}
                             style={styles.searchIcon}
@@ -277,26 +315,17 @@ const ProductionList = () => {
                             placeholder="Search production..."
                             value={search}
                             onChange={(e) => {
-
                                 setSearch(
                                     e.target.value
                                 );
-
                                 setCurrentPage(1);
-
                             }}
                             style={styles.searchInput}
                         />
-
                     </div>
-
                 </div>
 
-
-                {/* Status */}
-
                 <div style={styles.filterGroup}>
-
                     <label style={styles.filterLabel}>
                         Status
                     </label>
@@ -304,17 +333,13 @@ const ProductionList = () => {
                     <select
                         value={status}
                         onChange={(e) => {
-
                             setStatus(
                                 e.target.value
                             );
-
                             setCurrentPage(1);
-
                         }}
                         style={styles.select}
                     >
-
                         <option value="">
                             All Status
                         </option>
@@ -343,15 +368,13 @@ const ProductionList = () => {
                             Completed
                         </option>
 
+                        <option value="CANCELLED">
+                            Cancelled
+                        </option>
                     </select>
-
                 </div>
 
-
-                {/* Production Line */}
-
                 <div style={styles.filterGroup}>
-
                     <label style={styles.filterLabel}>
                         Production Line
                     </label>
@@ -361,49 +384,33 @@ const ProductionList = () => {
                         placeholder="Production line..."
                         value={productionLine}
                         onChange={(e) => {
-
                             setProductionLine(
                                 e.target.value
                             );
-
                             setCurrentPage(1);
-
                         }}
                         style={styles.normalInput}
                     />
-
                 </div>
-
-
-                {/* Clear */}
 
                 <button
                     type="button"
                     onClick={handleClear}
                     style={styles.clearButton}
                 >
-
                     <X size={16} />
-
                     Clear
-
                 </button>
-
             </div>
 
-
-            {/* Table Card */}
+            {/* Table */}
 
             <div style={styles.card}>
-
                 <div style={styles.tableWrapper}>
-
                     <table style={styles.table}>
 
                         <thead>
-
                             <tr>
-
                                 <th style={styles.th}>
                                     #
                                 </th>
@@ -431,59 +438,60 @@ const ProductionList = () => {
                                 <th style={styles.th}>
                                     Actions
                                 </th>
-
                             </tr>
-
                         </thead>
-
 
                         <tbody>
 
                             {loading ? (
-
                                 <tr>
-
                                     <td
                                         colSpan="7"
                                         style={styles.empty}
                                     >
                                         Loading...
                                     </td>
-
                                 </tr>
-
                             ) : data.length === 0 ? (
-
                                 <tr>
-
                                     <td
                                         colSpan="7"
                                         style={styles.empty}
                                     >
                                         No production orders found
                                     </td>
-
                                 </tr>
-
                             ) : (
-
                                 data.map(
-                                    (production, index) => {
+                                    (
+                                        production,
+                                        index
+                                    ) => {
 
                                         const statusStyle =
                                             getStatusStyle(
                                                 production.status
                                             );
 
-                                        return (
+                                        const canProgress =
+                                            Boolean(
+                                                getNextStatus(
+                                                    production.status
+                                                )
+                                            );
 
+                                        const canCancel =
+                                            production.status !==
+                                                "COMPLETED" &&
+                                            production.status !==
+                                                "CANCELLED";
+
+                                        return (
                                             <tr
                                                 key={
                                                     production.id
                                                 }
                                             >
-
-                                                {/* Number */}
 
                                                 <td
                                                     style={{
@@ -491,83 +499,66 @@ const ProductionList = () => {
                                                         color: "#94a3b8",
                                                     }}
                                                 >
-
-                                                    {(currentPage - 1) *
+                                                    {(currentPage -
+                                                        1) *
                                                         10 +
                                                         index +
                                                         1}
-
                                                 </td>
 
-
-                                                {/* Production Number */}
-
                                                 <td
-                                                    style={styles.td}
+                                                    style={
+                                                        styles.td
+                                                    }
                                                 >
-
                                                     <span
                                                         style={
                                                             styles.identity
                                                         }
                                                     >
-
                                                         {
                                                             production.production_no
                                                         }
-
                                                     </span>
-
                                                 </td>
 
-
-                                                {/* Product */}
-
                                                 <td
-                                                    style={styles.td}
+                                                    style={
+                                                        styles.td
+                                                    }
                                                 >
-
                                                     {
                                                         production.product_name ||
                                                         "-"
                                                     }
-
                                                 </td>
 
-
-                                                {/* Quantity */}
-
                                                 <td
-                                                    style={styles.td}
+                                                    style={
+                                                        styles.td
+                                                    }
                                                 >
-
                                                     {
                                                         production.quantity
                                                     }
-
                                                 </td>
 
-
-                                                {/* Production Line */}
-
                                                 <td
-                                                    style={styles.td}
+                                                    style={
+                                                        styles.td
+                                                    }
                                                 >
-
                                                     {
                                                         production.production_line ||
                                                         "-"
                                                     }
-
                                                 </td>
 
-
-                                                {/* Status */}
-
                                                 <td
-                                                    style={styles.td}
+                                                    style={
+                                                        styles.td
+                                                    }
                                                 >
-
                                                     <span
                                                         style={{
                                                             ...styles.status,
@@ -577,7 +568,6 @@ const ProductionList = () => {
                                                                 statusStyle.color,
                                                         }}
                                                     >
-
                                                         <span
                                                             style={{
                                                                 ...styles.statusDot,
@@ -586,24 +576,18 @@ const ProductionList = () => {
                                                             }}
                                                         />
 
-                                                        {
-                                                            production.status_display ||
+                                                        {production.status_display ||
                                                             getStatusLabel(
                                                                 production.status
-                                                            )
-                                                        }
-
+                                                            )}
                                                     </span>
-
                                                 </td>
 
-
-                                                {/* Actions */}
-
                                                 <td
-                                                    style={styles.td}
+                                                    style={
+                                                        styles.td
+                                                    }
                                                 >
-
                                                     <div
                                                         style={
                                                             styles.actions
@@ -624,19 +608,17 @@ const ProductionList = () => {
                                                             }}
                                                             title="View Production"
                                                         >
-
                                                             <Eye
-                                                                size={16}
+                                                                size={
+                                                                    16
+                                                                }
                                                             />
-
                                                         </button>
-
 
                                                         {/* Edit */}
 
                                                         {production.status ===
                                                             "WAITING" && (
-
                                                             <button
                                                                 onClick={() =>
                                                                     handleEdit(
@@ -649,74 +631,85 @@ const ProductionList = () => {
                                                                 }}
                                                                 title="Edit Production"
                                                             >
-
                                                                 <Pencil
-                                                                    size={16}
+                                                                    size={
+                                                                        16
+                                                                    }
                                                                 />
-
                                                             </button>
-
                                                         )}
 
+                                                        {/* Progress */}
 
-                                                        {/* Start */}
-
-                                                        {production.status ===
-                                                            "WAITING" && (
-
+                                                        {canProgress && (
                                                             <button
                                                                 onClick={() =>
-                                                                    handleStart(
-                                                                        production.id
+                                                                    handleStatusClick(
+                                                                        production
                                                                     )
                                                                 }
                                                                 style={{
                                                                     ...styles.actionButton,
                                                                     ...styles.startButton,
                                                                 }}
-                                                                title="Start Production"
+                                                                title={`Move to ${getStatusLabel(
+                                                                    getNextStatus(
+                                                                        production.status
+                                                                    )
+                                                                )}`}
                                                             >
-
                                                                 <Play
-                                                                    size={15}
+                                                                    size={
+                                                                        15
+                                                                    }
                                                                 />
-
                                                             </button>
+                                                        )}
 
+                                                        {/* Cancel */}
+
+                                                        {canCancel && (
+                                                            <button
+                                                                onClick={() =>
+                                                                    handleCancelClick(
+                                                                        production
+                                                                    )
+                                                                }
+                                                                style={{
+                                                                    ...styles.actionButton,
+                                                                    ...styles.cancelButton,
+                                                                }}
+                                                                title="Cancel Production"
+                                                            >
+                                                                <Ban
+                                                                    size={
+                                                                        15
+                                                                    }
+                                                                />
+                                                            </button>
                                                         )}
 
                                                     </div>
-
                                                 </td>
-
                                             </tr>
-
                                         );
-
                                     }
                                 )
-
                             )}
 
                         </tbody>
-
                     </table>
-
                 </div>
-
 
                 {/* Footer */}
 
                 <div style={styles.footer}>
-
                     <span style={styles.resultText}>
                         {data.length} results
                     </span>
 
                     <Pagination
-                        currentPage={
-                            currentPage
-                        }
+                        currentPage={currentPage}
                         totalPages={
                             totalPages > 0
                                 ? totalPages
@@ -726,20 +719,171 @@ const ProductionList = () => {
                             setCurrentPage
                         }
                     />
-
                 </div>
-
             </div>
 
+            {/* Status Confirmation Modal */}
+
+            {showStatusModal &&
+                selectedProduction && (
+                    <div
+                        style={styles.modalOverlay}
+                        onClick={closeStatusModal}
+                    >
+                        <div
+                            style={styles.modal}
+                            onClick={(e) =>
+                                e.stopPropagation()
+                            }
+                        >
+
+                            <div
+                                style={
+                                    selectedProduction.action ===
+                                    "cancel"
+                                        ? styles.modalCancelIcon
+                                        : styles.modalIcon
+                                }
+                            >
+                                {selectedProduction.action ===
+                                "cancel" ? (
+                                    <Ban size={21} />
+                                ) : (
+                                    <AlertTriangle
+                                        size={21}
+                                    />
+                                )}
+                            </div>
+
+                            <h3
+                                style={
+                                    styles.modalTitle
+                                }
+                            >
+                                {selectedProduction.action ===
+                                "cancel"
+                                    ? "Cancel Production?"
+                                    : "Update Production Status?"}
+                            </h3>
+
+                            <p
+                                style={
+                                    styles.modalText
+                                }
+                            >
+                                {selectedProduction.action ===
+                                "cancel"
+                                    ? "Are you sure you want to cancel production order"
+                                    : "Are you sure you want to update production order"}{" "}
+                                <strong>
+                                    {
+                                        selectedProduction.production_no
+                                    }
+                                </strong>
+                                ?
+                            </p>
+
+                            <div
+                                style={
+                                    styles.statusChange
+                                }
+                            >
+                                <span
+                                    style={
+                                        styles.currentStatus
+                                    }
+                                >
+                                    {getStatusLabel(
+                                        selectedProduction.status
+                                    )}
+                                </span>
+
+                                <span
+                                    style={
+                                        styles.statusArrow
+                                    }
+                                >
+                                    →
+                                </span>
+
+                                <span
+                                    style={
+                                        selectedProduction.action ===
+                                        "cancel"
+                                            ? styles.cancelledStatus
+                                            : styles.nextStatus
+                                    }
+                                >
+                                    {getStatusLabel(
+                                        selectedProduction.nextStatus
+                                    )}
+                                </span>
+                            </div>
+
+                            <p
+                                style={
+                                    styles.modalWarning
+                                }
+                            >
+                                {selectedProduction.action ===
+                                "cancel"
+                                    ? "The production will be marked as cancelled and the cancellation date will be recorded automatically."
+                                    : "The production status will be updated and the corresponding process date will be recorded automatically."}
+                            </p>
+
+                            <div
+                                style={
+                                    styles.modalActions
+                                }
+                            >
+                                <button
+                                    type="button"
+                                    onClick={
+                                        closeStatusModal
+                                    }
+                                    style={
+                                        styles.modalCancelButton
+                                    }
+                                    disabled={
+                                        updatingStatus
+                                    }
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={
+                                        confirmStatusUpdate
+                                    }
+                                    style={
+                                        selectedProduction.action ===
+                                        "cancel"
+                                            ? styles.modalConfirmCancelButton
+                                            : styles.modalConfirmButton
+                                    }
+                                    disabled={
+                                        updatingStatus
+                                    }
+                                >
+                                    {updatingStatus
+                                        ? "Updating..."
+                                        : selectedProduction.action ===
+                                          "cancel"
+                                        ? "Confirm Cancel"
+                                        : "Confirm Update"}
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                )}
+
         </div>
-
     );
-
 };
 
-
 const styles = {
-
     page: {
         backgroundColor: "#f8fafc",
         minHeight: "100vh",
@@ -973,6 +1117,12 @@ const styles = {
         border: "1px solid #bbf7d0",
     },
 
+    cancelButton: {
+        color: "#dc2626",
+        backgroundColor: "#fef2f2",
+        border: "1px solid #fecaca",
+    },
+
     footer: {
         display: "flex",
         alignItems: "center",
@@ -992,7 +1142,148 @@ const styles = {
         fontSize: "14px",
     },
 
-};
+    modalOverlay: {
+        position: "fixed",
+        inset: 0,
+        backgroundColor: "rgba(15, 23, 42, 0.45)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1000,
+        padding: "20px",
+    },
 
+    modal: {
+        width: "420px",
+        maxWidth: "100%",
+        backgroundColor: "#ffffff",
+        borderRadius: "12px",
+        padding: "24px",
+        boxShadow:
+            "0 20px 40px rgba(15, 23, 42, 0.15)",
+    },
+
+    modalIcon: {
+        width: "42px",
+        height: "42px",
+        borderRadius: "10px",
+        backgroundColor: "#fff7ed",
+        color: "#ea580c",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: "16px",
+    },
+
+    modalCancelIcon: {
+        width: "42px",
+        height: "42px",
+        borderRadius: "10px",
+        backgroundColor: "#fef2f2",
+        color: "#dc2626",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: "16px",
+    },
+
+    modalTitle: {
+        margin: 0,
+        fontSize: "18px",
+        fontWeight: "600",
+        color: "#0f172a",
+    },
+
+    modalText: {
+        margin: "8px 0 16px",
+        fontSize: "14px",
+        lineHeight: "1.5",
+        color: "#64748b",
+    },
+
+    statusChange: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "10px",
+        padding: "14px",
+        backgroundColor: "#f8fafc",
+        border: "1px solid #e2e8f0",
+        borderRadius: "8px",
+    },
+
+    currentStatus: {
+        fontSize: "13px",
+        fontWeight: "500",
+        color: "#64748b",
+    },
+
+    statusArrow: {
+        color: "#94a3b8",
+        fontSize: "18px",
+    },
+
+    nextStatus: {
+        fontSize: "13px",
+        fontWeight: "600",
+        color: "#4f46e5",
+    },
+
+    cancelledStatus: {
+        fontSize: "13px",
+        fontWeight: "600",
+        color: "#dc2626",
+    },
+
+    modalWarning: {
+        margin: "14px 0 0",
+        fontSize: "12px",
+        lineHeight: "1.5",
+        color: "#94a3b8",
+    },
+
+    modalActions: {
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: "10px",
+        marginTop: "22px",
+    },
+
+    modalCancelButton: {
+        height: "38px",
+        padding: "0 14px",
+        border: "1px solid #e2e8f0",
+        borderRadius: "8px",
+        backgroundColor: "#ffffff",
+        color: "#475569",
+        fontSize: "14px",
+        fontWeight: "500",
+        cursor: "pointer",
+    },
+
+    modalConfirmButton: {
+        height: "38px",
+        padding: "0 16px",
+        border: "none",
+        borderRadius: "8px",
+        backgroundColor: "#4f46e5",
+        color: "#ffffff",
+        fontSize: "14px",
+        fontWeight: "500",
+        cursor: "pointer",
+    },
+
+    modalConfirmCancelButton: {
+        height: "38px",
+        padding: "0 16px",
+        border: "none",
+        borderRadius: "8px",
+        backgroundColor: "#dc2626",
+        color: "#ffffff",
+        fontSize: "14px",
+        fontWeight: "500",
+        cursor: "pointer",
+    },
+};
 
 export default ProductionList;

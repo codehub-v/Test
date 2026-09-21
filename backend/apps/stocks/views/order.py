@@ -1,5 +1,7 @@
+from decimal import Decimal
+
 from django.db import transaction
-from django.utils import timezone
+from django.db.models import Prefetch
 
 from rest_framework import status
 from rest_framework.decorators import action
@@ -14,14 +16,26 @@ from apps.stocks.models import (
 
 from apps.stocks.serializers import (
     ProductionOrderSerializer,
+    ProductionOrderRetrieveSerializer,
+    ProductionOrderWriteSerializer,
 )
 
 
 class ProductionOrderViewSet(ModelViewSet):
 
-    queryset = ProductionOrder.objects.all()
+    queryset = ProductionOrder.objects.select_related(
+        "product"
+    ).all()
 
-    serializer_class = ProductionOrderSerializer
+    def get_serializer_class(self):
+
+        if self.action == "list":
+            return ProductionOrderSerializer
+
+        if self.action == "retrieve":
+            return ProductionOrderRetrieveSerializer
+
+        return ProductionOrderWriteSerializer
 
     @action(
         detail=True,
@@ -34,11 +48,19 @@ class ProductionOrderViewSet(ModelViewSet):
         production = (
             ProductionOrder.objects
             .select_for_update()
-            .prefetch_related("product__items")
-            .get(pk=pk)
+            .select_related("product")
+            .prefetch_related(
+                "product__items"
+            )
+            .filter(pk=pk)
+            .first()
         )
 
-        # Only WAITING production can be started
+        if not production:
+            raise ValidationError(
+                "Production order not found."
+            )
+
         if production.status != ProductionOrder.Status.WAITING:
             raise ValidationError(
                 "Only waiting production can be started."
@@ -51,110 +73,119 @@ class ProductionOrderViewSet(ModelViewSet):
                 "The selected BOM is not active."
             )
 
-        # ------------------------------------------------
-        # Calculate required materials
-        # ------------------------------------------------
+        if bom.quantity <= 0:
+            raise ValidationError(
+                "BOM quantity must be greater than zero."
+            )
 
         required_materials = []
 
         for item in bom.items.all():
 
-            # BOM quantity represents the production quantity
-            # for which the BOM was created.
+            if not item.fabric_id and not item.accessory_id:
+                continue
+
             base_quantity = (
-                item.quantity
-                * production.quantity
-                / bom.quantity
+                Decimal(item.quantity)
+                * Decimal(production.quantity)
+                / Decimal(bom.quantity)
             )
 
-            # Add wastage
-            wastage = (
+            wastage_quantity = (
                 base_quantity
-                * item.wastage_percentage
-                / 100
+                * Decimal(item.wastage_percentage)
+                / Decimal("100")
             )
 
             required_quantity = (
-                base_quantity + wastage
-            )
-
-            material = (
-                item.fabric
-                if item.fabric_id
-                else item.accessory
+                base_quantity + wastage_quantity
             )
 
             required_materials.append({
-                "material": material,
+                "fabric_id": item.fabric_id,
+                "accessory_id": item.accessory_id,
+                "color_id": item.color_id,
+                "unit_id": item.unit_id,
                 "quantity": required_quantity,
             })
 
-        # ------------------------------------------------
-        # Check inventory
-        # ------------------------------------------------
-
         for requirement in required_materials:
 
-            material = requirement["material"]
-            required_quantity = requirement["quantity"]
+            inventory_filter = {
+                "quantity__gt": 0,
+                "is_active": True,
+            }
+
+            if requirement["fabric_id"]:
+                inventory_filter["fabric_id"] = (
+                    requirement["fabric_id"]
+                )
+
+            if requirement["accessory_id"]:
+                inventory_filter["accessory_id"] = (
+                    requirement["accessory_id"]
+                )
+
+            if requirement["color_id"]:
+                inventory_filter["color_id"] = (
+                    requirement["color_id"]
+                )
+
+            if requirement["unit_id"]:
+                inventory_filter["unit_id"] = (
+                    requirement["unit_id"]
+                )
 
             inventory = (
                 InventoryItem.objects
                 .select_for_update()
-                .filter(
-                    # Change this field according to your
-                    # InventoryItem model.
-                    material=material
-                )
+                .filter(**inventory_filter)
                 .first()
             )
 
             if not inventory:
-                raise ValidationError(
-                    f"No inventory found for {material}."
+
+                material_name = (
+                    inventory_material_name(
+                        requirement
+                    )
                 )
 
-            if inventory.quantity < required_quantity:
                 raise ValidationError(
-                    f"Insufficient stock for {material}. "
+                    f"No inventory found for {material_name}."
+                )
+
+            required_quantity = requirement["quantity"]
+
+            if inventory.quantity < required_quantity:
+
+                material_name = (
+                    inventory_material_name(
+                        requirement
+                    )
+                )
+
+                raise ValidationError(
+                    f"Insufficient stock for {material_name}. "
                     f"Required: {required_quantity}, "
                     f"Available: {inventory.quantity}."
                 )
 
-        # ------------------------------------------------
-        # Deduct inventory
-        # ------------------------------------------------
-
-        for requirement in required_materials:
-
-            material = requirement["material"]
-            required_quantity = requirement["quantity"]
-
-            inventory = (
-                InventoryItem.objects
-                .select_for_update()
-                .get(
-                    material=material
-                )
-            )
-
             inventory.quantity -= required_quantity
 
             inventory.save(
-                update_fields=["quantity"]
+                update_fields=[
+                    "quantity",
+                    "updated_at",
+                ]
             )
 
-        # ------------------------------------------------
-        # Start production
-        # ------------------------------------------------
-
         production.status = ProductionOrder.Status.CUTTING
-        production.start_date = timezone.now().date()
 
         production.save(
             update_fields=[
                 "status",
-                "start_date",
+                "cutting_date",
                 "updated_at",
             ]
         )
@@ -164,6 +195,18 @@ class ProductionOrderViewSet(ModelViewSet):
                 "message": "Production started successfully.",
                 "production_no": production.production_no,
                 "status": production.status,
+                "cutting_date": production.cutting_date,
             },
             status=status.HTTP_200_OK
         )
+
+
+def inventory_material_name(requirement):
+
+    if requirement["fabric_id"]:
+        return f"Fabric ID {requirement['fabric_id']}"
+
+    if requirement["accessory_id"]:
+        return f"Accessory ID {requirement['accessory_id']}"
+
+    return "Unknown material"
