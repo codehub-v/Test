@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, Pencil, PackageCheck } from "lucide-react";
+import {
+    Search,
+    Plus,
+    Pencil,
+    Eye,
+    PackageCheck,
+    X,
+} from "lucide-react";
 import Pagination from "../../../components/Pagination";
-import "./SupplyList.css";
 import api from "../../../apis/base";
 
 const SupplyList = () => {
@@ -10,7 +16,6 @@ const SupplyList = () => {
 
     const [data, setData] = useState([]);
     const [suppliers, setSuppliers] = useState([]);
-
     const [loading, setLoading] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -24,30 +29,14 @@ const SupplyList = () => {
         order_date_to: "",
     });
 
-    // =========================
-    // Fetch Suppliers
-    // =========================
-
     const fetchSuppliers = async () => {
         try {
-            const response = await api.get(
-                "/master/meta/suppliers/"
-            );
-
-            setSuppliers(
-                response.data || []
-            );
+            const response = await api.get("/master/meta/suppliers/");
+            setSuppliers(response.data || []);
         } catch (error) {
-            console.error(
-                "Failed to fetch suppliers:",
-                error
-            );
+            console.error("Failed to fetch suppliers:", error);
         }
     };
-
-    // =========================
-    // Fetch Supply Orders
-    // =========================
 
     const fetchSupplyOrders = async () => {
         try {
@@ -57,36 +46,29 @@ const SupplyList = () => {
                 page: currentPage,
             };
 
-            Object.entries(filters).forEach(
-                ([key, value]) => {
-                    if (value) {
-                        params[key] = value;
-                    }
+            Object.entries(filters).forEach(([key, value]) => {
+                if (value) {
+                    params[key] = value;
                 }
-            );
+            });
 
             const response = await api.get(
                 "/inventory/supply-orders/",
                 { params }
             );
 
-            setData(
-                response.data.results || []
-            );
+            setData(response.data.results || []);
 
             if (response.data.count) {
                 const pageSize =
                     response.data.results?.length || 10;
 
                 setTotalPages(
-                    Math.ceil(
-                        response.data.count / pageSize
-                    )
+                    Math.ceil(response.data.count / pageSize)
                 );
             } else {
                 setTotalPages(1);
             }
-
         } catch (error) {
             console.error(
                 "Failed to fetch supply orders:",
@@ -95,15 +77,10 @@ const SupplyList = () => {
 
             setData([]);
             setTotalPages(1);
-
         } finally {
             setLoading(false);
         }
     };
-
-    // =========================
-    // Effects
-    // =========================
 
     useEffect(() => {
         fetchSuppliers();
@@ -112,10 +89,6 @@ const SupplyList = () => {
     useEffect(() => {
         fetchSupplyOrders();
     }, [currentPage, filters]);
-
-    // =========================
-    // Filter Change
-    // =========================
 
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
@@ -127,10 +100,6 @@ const SupplyList = () => {
 
         setCurrentPage(1);
     };
-
-    // =========================
-    // Clear Filters
-    // =========================
 
     const clearFilters = () => {
         setFilters({
@@ -144,15 +113,10 @@ const SupplyList = () => {
         setCurrentPage(1);
     };
 
-    // =========================
-    // Helpers
-    // =========================
-
     const formatDate = (date) => {
         if (!date) return "-";
 
-        const [year, month, day] =
-            date.split("-");
+        const [year, month, day] = date.split("-");
 
         return `${day}-${month}-${year}`;
     };
@@ -168,353 +132,598 @@ const SupplyList = () => {
         return labels[status] || status || "-";
     };
 
-    // =========================
-    // Render
-    // =========================
+    const styles = {
+        page: {
+            minHeight: "100vh",
+            background: "#f8fafc",
+            padding: "24px",
+            fontFamily:
+                "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        },
+
+        header: {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "24px",
+        },
+
+        title: {
+            margin: 0,
+            fontSize: "24px",
+            fontWeight: 650,
+            color: "#0f172a",
+        },
+
+        subtitle: {
+            margin: "5px 0 0",
+            fontSize: "14px",
+            color: "#64748b",
+        },
+
+        addButton: {
+            display: "flex",
+            alignItems: "center",
+            gap: "7px",
+            height: "40px",
+            padding: "0 16px",
+            border: "none",
+            borderRadius: "8px",
+            background: "#4f46e5",
+            color: "#ffffff",
+            fontSize: "14px",
+            fontWeight: 500,
+            cursor: "pointer",
+        },
+
+        filterCard: {
+            background: "#ffffff",
+            border: "1px solid #e2e8f0",
+            borderRadius: "12px",
+            padding: "18px",
+            marginBottom: "20px",
+            boxShadow: "0 1px 2px rgba(15, 23, 42, 0.03)",
+        },
+
+        filterTop: {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "16px",
+        },
+
+        filterTitle: {
+            margin: 0,
+            fontSize: "15px",
+            fontWeight: 600,
+            color: "#0f172a",
+        },
+
+        filterSubtitle: {
+            display: "block",
+            marginTop: "3px",
+            fontSize: "13px",
+            color: "#64748b",
+        },
+
+        clearButton: {
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            height: "40px",
+            padding: "0 14px",
+            border: "1px solid #e2e8f0",
+            borderRadius: "8px",
+            background: "#ffffff",
+            color: "#475569",
+            fontSize: "14px",
+            fontWeight: 500,
+            cursor: "pointer",
+        },
+
+        filterGrid: {
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "16px",
+        },
+
+        formGroup: {
+            display: "flex",
+            flexDirection: "column",
+            gap: "6px",
+        },
+
+        label: {
+            fontSize: "13px",
+            fontWeight: 600,
+            color: "#475569",
+        },
+
+        searchWrapper: {
+            position: "relative",
+            width: "320px",
+        },
+
+        searchIcon: {
+            position: "absolute",
+            left: "12px",
+            top: "50%",
+            transform: "translateY(-50%)",
+            color: "#94a3b8",
+        },
+
+        searchInput: {
+            width: "100%",
+            height: "40px",
+            boxSizing: "border-box",
+            padding: "0 12px 0 38px",
+            border: "1px solid #cbd5e1",
+            borderRadius: "8px",
+            outline: "none",
+            fontSize: "14px",
+            color: "#334155",
+            background: "#ffffff",
+        },
+
+        input: {
+            width: "200px",
+            height: "40px",
+            boxSizing: "border-box",
+            padding: "0 12px",
+            border: "1px solid #cbd5e1",
+            borderRadius: "8px",
+            outline: "none",
+            fontSize: "14px",
+            color: "#334155",
+            background: "#ffffff",
+        },
+
+        select: {
+            width: "180px",
+            height: "40px",
+            boxSizing: "border-box",
+            padding: "0 12px",
+            border: "1px solid #cbd5e1",
+            borderRadius: "8px",
+            outline: "none",
+            fontSize: "14px",
+            color: "#334155",
+            background: "#ffffff",
+        },
+
+        card: {
+            background: "#ffffff",
+            border: "1px solid #e2e8f0",
+            borderRadius: "12px",
+            overflow: "hidden",
+            boxShadow: "0 1px 2px rgba(15, 23, 42, 0.03)",
+        },
+
+        tableHeader: {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "16px 18px",
+            borderBottom: "1px solid #e2e8f0",
+        },
+
+        tableTitle: {
+            margin: 0,
+            fontSize: "15px",
+            fontWeight: 600,
+            color: "#0f172a",
+        },
+
+        count: {
+            fontSize: "13px",
+            color: "#64748b",
+        },
+
+        tableWrapper: {
+            width: "100%",
+            overflowX: "auto",
+        },
+
+        table: {
+            width: "100%",
+            borderCollapse: "collapse",
+        },
+
+        th: {
+            padding: "13px 18px",
+            textAlign: "left",
+            fontSize: "12px",
+            fontWeight: 600,
+            color: "#64748b",
+            background: "#f8fafc",
+            whiteSpace: "nowrap",
+        },
+
+        td: {
+            padding: "15px 18px",
+            fontSize: "14px",
+            color: "#334155",
+            borderTop: "1px solid #f1f5f9",
+            whiteSpace: "nowrap",
+        },
+
+        number: {
+            color: "#94a3b8",
+            fontSize: "13px",
+        },
+
+        identity: {
+            fontWeight: 600,
+            color: "#0f172a",
+        },
+
+        status: {
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "6px",
+            padding: "5px 9px",
+            borderRadius: "20px",
+            fontSize: "12px",
+            fontWeight: 500,
+        },
+
+        statusDot: {
+            width: "6px",
+            height: "6px",
+            borderRadius: "50%",
+        },
+
+        actions: {
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+        },
+
+        actionButton: {
+            width: "34px",
+            height: "34px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "7px",
+            cursor: "pointer",
+        },
+
+        viewButton: {
+            border: "1px solid #ccfbf1",
+            background: "#f0fdfa",
+            color: "#0f766e",
+        },
+
+        editButton: {
+            border: "1px solid #e0e7ff",
+            background: "#eef2ff",
+            color: "#4f46e5",
+        },
+
+        receiveButton: {
+            border: "1px solid #dcfce7",
+            background: "#f0fdf4",
+            color: "#15803d",
+        },
+
+        footer: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "14px 18px",
+            borderTop: "1px solid #e2e8f0",
+        },
+
+        resultText: {
+            fontSize: "13px",
+            color: "#64748b",
+        },
+
+        empty: {
+            padding: "50px 20px",
+            textAlign: "center",
+            fontSize: "14px",
+            color: "#94a3b8",
+        },
+    };
+
+    const getStatusStyle = (status) => {
+        const statusStyles = {
+            ordered: {
+                background: "#eff6ff",
+                color: "#2563eb",
+                dot: "#3b82f6",
+            },
+            partial: {
+                background: "#fffbeb",
+                color: "#b45309",
+                dot: "#f59e0b",
+            },
+            received: {
+                background: "#f0fdf4",
+                color: "#15803d",
+                dot: "#22c55e",
+            },
+            cancelled: {
+                background: "#fef2f2",
+                color: "#dc2626",
+                dot: "#ef4444",
+            },
+        };
+
+        return (
+            statusStyles[status] || {
+                background: "#f1f5f9",
+                color: "#475569",
+                dot: "#94a3b8",
+            }
+        );
+    };
 
     return (
-        <div className="item-page">
-
+        <div style={styles.page}>
             {/* Header */}
-
-            <div className="page-header">
-
+            <div style={styles.header}>
                 <div>
-                    <h1>Supply Orders</h1>
+                    <h1 style={styles.title}>Supply Orders</h1>
 
-                    <p>
+                    <p style={styles.subtitle}>
                         Manage supplier orders and stock receipts.
                     </p>
                 </div>
 
                 <button
-                    className="primary-btn"
-                    onClick={() =>
-                        navigate("/supply/add")
-                    }
+                    style={styles.addButton}
+                    onClick={() => navigate("/supply/add")}
                 >
-                    + Add Supply Order
+                    <Plus size={17} />
+                    Add Supply Order
                 </button>
-
             </div>
 
-
             {/* Filters */}
-
-            <div className="filter-card">
-
-                <div className="filter-header">
-
+            <div style={styles.filterCard}>
+                <div style={styles.filterTop}>
                     <div>
-                        <h3>Filters</h3>
+                        <h3 style={styles.filterTitle}>Filters</h3>
 
-                        <span>
+                        <span style={styles.filterSubtitle}>
                             Search and filter supply orders
                         </span>
                     </div>
 
                     <button
-                        className="clear-btn"
+                        style={styles.clearButton}
                         onClick={clearFilters}
                     >
+                        <X size={15} />
                         Clear Filters
                     </button>
-
                 </div>
 
-
-                <div className="filter-grid">
-
+                <div style={styles.filterGrid}>
                     {/* Search */}
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>Search</label>
 
-                    <div className="form-group">
+                        <div style={styles.searchWrapper}>
+                            <Search
+                                size={16}
+                                style={styles.searchIcon}
+                            />
 
-                        <label>
-                            Search
-                        </label>
-
-                        <input
-                            type="text"
-                            name="search"
-                            placeholder="Search order or supplier..."
-                            value={filters.search}
-                            onChange={
-                                handleFilterChange
-                            }
-                        />
-
+                            <input
+                                type="text"
+                                name="search"
+                                placeholder="Search order or supplier..."
+                                value={filters.search}
+                                onChange={handleFilterChange}
+                                style={styles.searchInput}
+                            />
+                        </div>
                     </div>
 
-
                     {/* Status */}
-
-                    <div className="form-group">
-
-                        <label>
-                            Status
-                        </label>
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>Status</label>
 
                         <select
                             name="status"
                             value={filters.status}
-                            onChange={
-                                handleFilterChange
-                            }
+                            onChange={handleFilterChange}
+                            style={styles.select}
                         >
-
-                            <option value="">
-                                All Status
-                            </option>
-
-                            <option value="ordered">
-                                Ordered
-                            </option>
-
+                            <option value="">All Status</option>
+                            <option value="ordered">Ordered</option>
                             <option value="partial">
                                 Partially Received
                             </option>
-
                             <option value="received">
                                 Received
                             </option>
-
                             <option value="cancelled">
                                 Cancelled
                             </option>
-
                         </select>
-
                     </div>
 
-
                     {/* Supplier */}
-
-                    <div className="form-group">
-
-                        <label>
-                            Supplier
-                        </label>
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>Supplier</label>
 
                         <select
                             name="supplier"
                             value={filters.supplier}
-                            onChange={
-                                handleFilterChange
-                            }
+                            onChange={handleFilterChange}
+                            style={styles.select}
                         >
+                            <option value="">All Suppliers</option>
 
-                            <option value="">
-                                All Suppliers
-                            </option>
-
-                            {suppliers.map(
-                                (supplier) => (
-                                    <option
-                                        key={supplier.id}
-                                        value={supplier.id}
-                                    >
-                                        {supplier.identity}
-                                    </option>
-                                )
-                            )}
-
+                            {suppliers.map((supplier) => (
+                                <option
+                                    key={supplier.id}
+                                    value={supplier.id}
+                                >
+                                    {supplier.identity}
+                                </option>
+                            ))}
                         </select>
-
                     </div>
 
-
-                    {/* Order Date From */}
-
-                    <div className="form-group">
-
-                        <label>
+                    {/* Date From */}
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>
                             Order Date From
                         </label>
 
                         <input
                             type="date"
                             name="order_date_from"
-                            value={
-                                filters.order_date_from
-                            }
-                            onChange={
-                                handleFilterChange
-                            }
+                            value={filters.order_date_from}
+                            onChange={handleFilterChange}
+                            style={styles.input}
                         />
-
                     </div>
 
-
-                    {/* Order Date To */}
-
-                    <div className="form-group">
-
-                        <label>
+                    {/* Date To */}
+                    <div style={styles.formGroup}>
+                        <label style={styles.label}>
                             Order Date To
                         </label>
 
                         <input
                             type="date"
                             name="order_date_to"
-                            value={
-                                filters.order_date_to
-                            }
-                            onChange={
-                                handleFilterChange
-                            }
+                            value={filters.order_date_to}
+                            onChange={handleFilterChange}
+                            style={styles.input}
                         />
-
                     </div>
-
                 </div>
-
             </div>
 
-
             {/* Table */}
-
-            <div className="table-card">
-
-                <div className="table-header">
-
-                    <h3>
+            <div style={styles.card}>
+                <div style={styles.tableHeader}>
+                    <h3 style={styles.tableTitle}>
                         Supply Orders
                     </h3>
 
-                    <span>
+                    <span style={styles.count}>
                         {data.length} order
-                        {data.length !== 1
-                            ? "s"
-                            : ""}
+                        {data.length !== 1 ? "s" : ""}
                     </span>
-
                 </div>
 
-
-                <div className="table-wrapper">
-
-                    <table>
-
+                <div style={styles.tableWrapper}>
+                    <table style={styles.table}>
                         <thead>
-
                             <tr>
-                                <th>#</th>
-                                <th>Order Number</th>
-                                <th>Supplier</th>
-                                <th>Order Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <th style={styles.th}>#</th>
+                                <th style={styles.th}>Order Number</th>
+                                <th style={styles.th}>Supplier</th>
+                                <th style={styles.th}>Order Date</th>
+                                <th style={styles.th}>Status</th>
+                                <th style={styles.th}>Actions</th>
                             </tr>
-
                         </thead>
 
-
                         <tbody>
-
                             {loading ? (
-
                                 <tr>
                                     <td
                                         colSpan="6"
-                                        className="table-message"
+                                        style={styles.empty}
                                     >
                                         Loading...
                                     </td>
                                 </tr>
-
                             ) : data.length === 0 ? (
-
                                 <tr>
                                     <td
                                         colSpan="6"
-                                        className="table-message"
+                                        style={styles.empty}
                                     >
                                         No supply orders found
                                     </td>
                                 </tr>
-
                             ) : (
+                                data.map((item, index) => {
+                                    const statusStyle =
+                                        getStatusStyle(item.status);
 
-                                data.map(
-                                    (item, index) => (
-
-                                        <tr
-                                            key={
-                                                item.id
-                                            }
-                                        >
-
-                                            {/* Number */}
-
-                                            <td className="td-number">
+                                    return (
+                                        <tr key={item.id}>
+                                            <td
+                                                style={{
+                                                    ...styles.td,
+                                                    ...styles.number,
+                                                }}
+                                            >
                                                 {(currentPage - 1) *
                                                     10 +
                                                     index +
                                                     1}
                                             </td>
 
-
-                                            {/* Order Number */}
-
-                                            <td>
-
-                                                <span className="identity">
-                                                    {
-                                                        item.order_number
+                                            <td style={styles.td}>
+                                                <span
+                                                    style={
+                                                        styles.identity
                                                     }
+                                                >
+                                                    {item.order_number}
                                                 </span>
-
                                             </td>
 
-
-                                            {/* Supplier */}
-
-                                            <td>
-                                                {
-                                                    item.supplier_identity ||
-                                                    "-"
-                                                }
+                                            <td style={styles.td}>
+                                                {item.supplier_identity ||
+                                                    "-"}
                                             </td>
 
-
-                                            {/* Order Date */}
-
-                                            <td>
+                                            <td style={styles.td}>
                                                 {formatDate(
                                                     item.order_date
                                                 )}
                                             </td>
 
-
-                                            {/* Status */}
-
-                                            <td>
-
+                                            <td style={styles.td}>
                                                 <span
-                                                    className={`status ${item.status}`}
+                                                    style={{
+                                                        ...styles.status,
+                                                        background:
+                                                            statusStyle.background,
+                                                        color:
+                                                            statusStyle.color,
+                                                    }}
                                                 >
-
-                                                    <span className="status-dot" />
+                                                    <span
+                                                        style={{
+                                                            ...styles.statusDot,
+                                                            background:
+                                                                statusStyle.dot,
+                                                        }}
+                                                    />
 
                                                     {getStatusLabel(
                                                         item.status
                                                     )}
-
                                                 </span>
-
                                             </td>
 
-
-                                            {/* Actions */}
-
-                                            <td>
-
-                                                <div className="actions">
-
+                                            <td style={styles.td}>
+                                                <div
+                                                    style={
+                                                        styles.actions
+                                                    }
+                                                >
                                                     {/* View */}
-
                                                     <button
-                                                        className="action-button view-button"
+                                                        style={{
+                                                            ...styles.actionButton,
+                                                            ...styles.viewButton,
+                                                        }}
                                                         onClick={() =>
                                                             navigate(
                                                                 `/supply/details/${item.id}`
@@ -522,21 +731,19 @@ const SupplyList = () => {
                                                         }
                                                         title="View Supply Order"
                                                     >
-                                                        <Eye
-                                                            size={16}
-                                                        />
+                                                        <Eye size={16} />
                                                     </button>
 
-
                                                     {/* Edit */}
-
                                                     {item.status !==
                                                         "received" &&
                                                         item.status !==
                                                             "cancelled" && (
-
                                                             <button
-                                                                className="action-button edit-button"
+                                                                style={{
+                                                                    ...styles.actionButton,
+                                                                    ...styles.editButton,
+                                                                }}
                                                                 onClick={() =>
                                                                     navigate(
                                                                         `/supply/add/${item.id}`
@@ -545,22 +752,23 @@ const SupplyList = () => {
                                                                 title="Edit Supply Order"
                                                             >
                                                                 <Pencil
-                                                                    size={16}
+                                                                    size={
+                                                                        16
+                                                                    }
                                                                 />
                                                             </button>
-
                                                         )}
 
-
                                                     {/* Receive */}
-
                                                     {item.status !==
                                                         "received" &&
                                                         item.status !==
                                                             "cancelled" && (
-
                                                             <button
-                                                                className="action-button receive-button"
+                                                                style={{
+                                                                    ...styles.actionButton,
+                                                                    ...styles.receiveButton,
+                                                                }}
                                                                 onClick={() =>
                                                                     navigate(
                                                                         `/supply/receive/${item.id}`
@@ -569,59 +777,37 @@ const SupplyList = () => {
                                                                 title="Receive Stock"
                                                             >
                                                                 <PackageCheck
-                                                                    size={16}
+                                                                    size={
+                                                                        16
+                                                                    }
                                                                 />
                                                             </button>
-
                                                         )}
-
                                                 </div>
-
                                             </td>
-
                                         </tr>
-
-                                    )
-                                )
-
+                                    );
+                                })
                             )}
-
                         </tbody>
-
                     </table>
-
                 </div>
 
-
                 {/* Footer */}
+                {!loading && data.length > 0 && (
+                    <div style={styles.footer}>
+                        <span style={styles.resultText}>
+                            {data.length} results
+                        </span>
 
-                {!loading &&
-                    data.length > 0 && (
-
-                        <div className="table-footer">
-
-                            <span className="result-text">
-                                {data.length} results
-                            </span>
-
-                            <Pagination
-                                currentPage={
-                                    currentPage
-                                }
-                                totalPages={
-                                    totalPages
-                                }
-                                onPageChange={
-                                    setCurrentPage
-                                }
-                            />
-
-                        </div>
-
-                    )}
-
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                        />
+                    </div>
+                )}
             </div>
-
         </div>
     );
 };

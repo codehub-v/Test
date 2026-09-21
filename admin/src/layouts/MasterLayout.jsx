@@ -214,44 +214,13 @@ const MasterLayout = () => {
                     </div>
 
                     <NavLink
-                        to="/production-orders"
+                        to="/orders"
                         className="menu-item"
                     >
                         <ClipboardList size={18} />
                         <span>Production Orders</span>
                     </NavLink>
 
-                    <NavLink
-                        to="/cutting"
-                        className="menu-item"
-                    >
-                        <Scissors size={18} />
-                        <span>Cutting</span>
-                    </NavLink>
-
-                    <NavLink
-                        to="/sewing"
-                        className="menu-item"
-                    >
-                        <Wrench size={18} />
-                        <span>Sewing</span>
-                    </NavLink>
-
-                    <NavLink
-                        to="/quality"
-                        className="menu-item"
-                    >
-                        <CheckCircle size={18} />
-                        <span>Quality</span>
-                    </NavLink>
-
-                    <NavLink
-                        to="/finished-goods"
-                        className="menu-item"
-                    >
-                        <PackageCheck size={18} />
-                        <span>Finished Goods</span>
-                    </NavLink>
 
 
                     {/* REPORTS */}

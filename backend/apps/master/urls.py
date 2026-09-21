@@ -22,7 +22,8 @@ from apps.master.views.meta import (
     StyleMeta, 
     SupplierMeta, 
     UnitMeta, 
-    AccessoryMeta
+    AccessoryMeta,
+    BOMMeta
 )
 
 router = DefaultRouter()
@@ -50,5 +51,6 @@ router.register("meta/suppliers", SupplierMeta, basename="supplier-meta")
 router.register("meta/seasons", SeasonMeta, basename="season-meta")
 router.register("meta/units", UnitMeta, basename="unit-meta")
 router.register("meta/accessories", AccessoryMeta, basename="accessory-meta")
+router.register("meta/bom", BOMMeta, basename="bom-meta")
 
 urlpatterns =[]+ router.urls

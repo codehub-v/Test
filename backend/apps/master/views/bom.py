@@ -11,19 +11,21 @@ from apps.master.serializers import (
 
 class BOMViewSet(ModelViewSet):
 
-    queryset = BOM.objects.all().select_related(
-        "style"
-    ).prefetch_related(
-        "items__fabric",
-        "items__accessory"
-    ).order_by("-id")
+    queryset = (
+        BOM.objects
+        .prefetch_related(
+            "items__fabric",
+            "items__accessory",
+            "items__color",
+            "items__unit",
+        )
+        .order_by("-id")
+    )
 
     filter_backends = [SearchFilter]
 
     search_fields = [
         "identity",
-        "version",
-        "style__identity",
     ]
 
     def get_serializer_class(self):

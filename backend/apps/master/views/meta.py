@@ -10,6 +10,7 @@ from apps.master.models import (
     Season,
     Unit,
     Accessory,
+    BOM
 )
 
 from apps.master.serializers import (
@@ -22,6 +23,7 @@ from apps.master.serializers import (
     SeasonReadSerializer,
     UnitReadSerializer,
     AccessoryReadSerializer,
+    BOMListSerializer
 )
 
 
@@ -78,3 +80,9 @@ class AccessoryMeta(ReadOnlyModelViewSet):
     pagination_class=None
     queryset = Accessory.objects.filter(is_active=True)
     serializer_class = AccessoryReadSerializer
+
+
+class BOMMeta(ReadOnlyModelViewSet):
+    pagination_class=None
+    queryset = BOM.objects.filter(is_active=True)
+    serializer_class = BOMListSerializer

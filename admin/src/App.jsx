@@ -37,6 +37,9 @@ import SupplyForm from "./pages/Inventory/Supply/SupplyForm";
 import SupplyReceive from "./pages/Inventory/Supply/SupplyReceive";
 import SupplyList from "./pages/Inventory/Supply/SupplyList";
 import SupplyDetails from "./pages/Inventory/Supply/SupplyDetails";
+import ProductionList from "./pages/Inventory/Production/ProductionList";
+import ProductionForm from "./pages/Inventory/Production/ProductionForm";
+import ProductionDetails from "./pages/Inventory/Production/ProductionDetails";
 
 function App() {
     return (
@@ -90,6 +93,12 @@ function App() {
                         <Route path="supply/add/:id" element={<SupplyForm />} />
                         <Route path="supply/details/:id" element={<SupplyDetails />} />
                         <Route path="supply/receive/:id" element={<SupplyReceive />} />
+
+
+                        <Route path="orders" element={<ProductionList />} /> 
+                        <Route path="orders/add" element={<ProductionForm />} /> 
+                        <Route path="orders/add/:id" element={<ProductionForm />} /> 
+                        <Route path="orders/detials/:id" element={<ProductionDetails />} /> 
                     </Route>
                 </Route>
 
