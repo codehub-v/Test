@@ -434,11 +434,7 @@ const StockList = () => {
         <div className="stock-table-footer">
 
           <span>
-            Showing{" "}
-            <strong>{data.length}</strong>{" "}
-            of{" "}
-            <strong>{totalCount}</strong>{" "}
-            items
+
           </span>
 
           <Pagination

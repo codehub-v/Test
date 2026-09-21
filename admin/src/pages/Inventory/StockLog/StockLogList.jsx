@@ -344,11 +344,7 @@ const StockLogList = () => {
         <div className="stock-log-table-footer">
 
           <span>
-            Showing{" "}
-            <strong>{data.length}</strong>{" "}
-            of{" "}
-            <strong>{totalCount}</strong>{" "}
-            logs
+
           </span>
 
           <Pagination

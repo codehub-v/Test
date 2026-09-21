@@ -532,11 +532,7 @@ const BOMList = () => {
                 {/* Footer */}
                 <div style={styles.footer}>
                     <div style={styles.resultText}>
-                        Showing {data.length} of{" "}
-                        {data.length > 0
-                            ? "available"
-                            : "0"}{" "}
-                        BOMs
+
                     </div>
 
                     <Pagination
