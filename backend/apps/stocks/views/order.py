@@ -1,17 +1,16 @@
 from decimal import Decimal
 
 from django.db import transaction
-from django.db.models import Prefetch
 
 from rest_framework import status
-from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.exceptions import ValidationError
 
 from apps.stocks.models import (
     ProductionOrder,
     InventoryItem,
+    StockTransaction,
 )
 
 from apps.stocks.serializers import (
@@ -37,104 +36,97 @@ class ProductionOrderViewSet(ModelViewSet):
 
         return ProductionOrderWriteSerializer
 
-    @action(
-        detail=True,
-        methods=["post"],
-        url_path="start"
-    )
     @transaction.atomic
-    def start_production(self, request, pk=None):
+    def update(self, request, *args, **kwargs):
 
         production = (
             ProductionOrder.objects
             .select_for_update()
             .select_related("product")
-            .prefetch_related(
-                "product__items"
-            )
-            .filter(pk=pk)
-            .first()
+            .prefetch_related("product__items")
+            .get(pk=kwargs["pk"])
         )
 
-        if not production:
-            raise ValidationError(
-                "Production order not found."
-            )
+        old_status = production.status
+        new_status = request.data.get(
+            "status",
+            old_status
+        )
 
-        if production.status != ProductionOrder.Status.WAITING:
-            raise ValidationError(
-                "Only waiting production can be started."
-            )
+        if (
+            old_status == ProductionOrder.Status.WAITING
+            and new_status == ProductionOrder.Status.CUTTING
+        ):
+            self.consume_inventory(production)
+
+        response = super().update(
+            request,
+            *args,
+            **kwargs
+        )
+
+        return response
+
+    @transaction.atomic
+    def partial_update(self, request, *args, **kwargs):
+
+        production = (
+            ProductionOrder.objects
+            .select_for_update()
+            .select_related("product")
+            .prefetch_related("product__items")
+            .get(pk=kwargs["pk"])
+        )
+
+        old_status = production.status
+        new_status = request.data.get(
+            "status",
+            old_status
+        )
+
+        if (
+            old_status == ProductionOrder.Status.WAITING
+            and new_status == ProductionOrder.Status.CUTTING
+        ):
+            self.consume_inventory(production)
+
+        response = super().partial_update(
+            request,
+            *args,
+            **kwargs
+        )
+
+        return response
+
+
+    def consume_inventory(self, production):
 
         bom = production.product
 
-        if not bom.is_active:
+        if bom.status != "active":
             raise ValidationError(
-                "The selected BOM is not active."
+                "The selected BOM is inactive."
             )
 
-        if bom.quantity <= 0:
-            raise ValidationError(
-                "BOM quantity must be greater than zero."
-            )
-
-        required_materials = []
+        requirements = []
 
         for item in bom.items.all():
 
-            if not item.fabric_id and not item.accessory_id:
-                continue
-
-            base_quantity = (
+            required_quantity = (
                 Decimal(item.quantity)
                 * Decimal(production.quantity)
-                / Decimal(bom.quantity)
             )
-
-            wastage_quantity = (
-                base_quantity
-                * Decimal(item.wastage_percentage)
-                / Decimal("100")
-            )
-
-            required_quantity = (
-                base_quantity + wastage_quantity
-            )
-
-            required_materials.append({
-                "fabric_id": item.fabric_id,
-                "accessory_id": item.accessory_id,
-                "color_id": item.color_id,
-                "unit_id": item.unit_id,
-                "quantity": required_quantity,
-            })
-
-        for requirement in required_materials:
 
             inventory_filter = {
-                "quantity__gt": 0,
-                "is_active": True,
+                "color_id": item.color_id,
+                "unit_id": item.unit_id,
             }
 
-            if requirement["fabric_id"]:
-                inventory_filter["fabric_id"] = (
-                    requirement["fabric_id"]
-                )
+            if item.fabric_id:
+                inventory_filter["fabric_id"] = item.fabric_id
 
-            if requirement["accessory_id"]:
-                inventory_filter["accessory_id"] = (
-                    requirement["accessory_id"]
-                )
-
-            if requirement["color_id"]:
-                inventory_filter["color_id"] = (
-                    requirement["color_id"]
-                )
-
-            if requirement["unit_id"]:
-                inventory_filter["unit_id"] = (
-                    requirement["unit_id"]
-                )
+            if item.accessory_id:
+                inventory_filter["accessory_id"] = item.accessory_id
 
             inventory = (
                 InventoryItem.objects
@@ -143,33 +135,32 @@ class ProductionOrderViewSet(ModelViewSet):
                 .first()
             )
 
+            material_name = inventory_material_name(item)
+
             if not inventory:
-
-                material_name = (
-                    inventory_material_name(
-                        requirement
-                    )
-                )
-
                 raise ValidationError(
-                    f"No inventory found for {material_name}."
+                    f"Insufficient stock for {material_name}. "
+                    f"No inventory available."
                 )
-
-            required_quantity = requirement["quantity"]
 
             if inventory.quantity < required_quantity:
-
-                material_name = (
-                    inventory_material_name(
-                        requirement
-                    )
-                )
-
                 raise ValidationError(
                     f"Insufficient stock for {material_name}. "
                     f"Required: {required_quantity}, "
                     f"Available: {inventory.quantity}."
                 )
+
+            requirements.append(
+                {
+                    "inventory": inventory,
+                    "quantity": required_quantity,
+                }
+            )
+
+        for requirement in requirements:
+
+            inventory = requirement["inventory"]
+            required_quantity = requirement["quantity"]
 
             inventory.quantity -= required_quantity
 
@@ -180,33 +171,24 @@ class ProductionOrderViewSet(ModelViewSet):
                 ]
             )
 
-        production.status = ProductionOrder.Status.CUTTING
-
-        production.save(
-            update_fields=[
-                "status",
-                "cutting_date",
-                "updated_at",
-            ]
-        )
-
-        return Response(
-            {
-                "message": "Production started successfully.",
-                "production_no": production.production_no,
-                "status": production.status,
-                "cutting_date": production.cutting_date,
-            },
-            status=status.HTTP_200_OK
-        )
+            StockTransaction.objects.create(
+                item=inventory,
+                transaction_in=Decimal("0"),
+                transaction_out=required_quantity,
+                quantity=required_quantity,
+                notes=(
+                    f"Material consumed for production "
+                    f"{production.production_no}"
+                ),
+            )
 
 
-def inventory_material_name(requirement):
+def inventory_material_name(item):
 
-    if requirement["fabric_id"]:
-        return f"Fabric ID {requirement['fabric_id']}"
+    if item.fabric_id:
+        return f"Fabric ID {item.fabric_id}"
 
-    if requirement["accessory_id"]:
-        return f"Accessory ID {requirement['accessory_id']}"
+    if item.accessory_id:
+        return f"Accessory ID {item.accessory_id}"
 
     return "Unknown material"
