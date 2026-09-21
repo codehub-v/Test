@@ -490,6 +490,12 @@ const ItemList = () => {
                                 <th style={styles.th}>
                                     Current Stock
                                 </th>
+                                <th style={styles.th}>
+                                    Ordered
+                                </th>
+                                <th style={styles.th}>
+                                    Production Required
+                                </th>
 
                                 <th style={styles.th}>
                                     Status
@@ -581,6 +587,12 @@ const ItemList = () => {
 
                                             <td style={styles.td}>
                                                 {item.quantity ?? 0}
+                                            </td>
+                                            <td style={styles.td}>
+                                                {item.supply_waiting ?? 0}
+                                            </td>
+                                            <td style={styles.td}>
+                                                {item.production_requirement ?? 0}
                                             </td>
 
 

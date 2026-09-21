@@ -1,5 +1,14 @@
+from decimal import Decimal
+
+from django.db.models import Sum
+
 from rest_framework import serializers
-from apps.stocks.models import InventoryItem
+
+from apps.stocks.models import (
+    InventoryItem,
+    SupplyOrderItem,
+    ProductionOrder,
+)
 
 
 class InventoryItemMetaSerializer(serializers.ModelSerializer):
@@ -16,7 +25,6 @@ class InventoryItemMetaSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "uuid",
-            # "code",
             "fabric",
             "accessory",
             "material_name",
@@ -25,23 +33,19 @@ class InventoryItemMetaSerializer(serializers.ModelSerializer):
             "is_active",
         ]
 
-    
     def get_material_name(self, obj):
 
-        item = obj
+        color = obj.color.identity
 
-        color = item.color.identity
-
-        if item.fabric:
-            material = item.fabric.identity
-
-        elif item.accessory:
-            material = item.accessory.identity
-
+        if obj.fabric:
+            material = obj.fabric.identity
+        elif obj.accessory:
+            material = obj.accessory.identity
         else:
             material = ""
 
         return f"{color} - {material}"
+
 
 class InventoryItemReadSerializer(serializers.ModelSerializer):
 
@@ -50,21 +54,83 @@ class InventoryItemReadSerializer(serializers.ModelSerializer):
     color = serializers.StringRelatedField()
     unit = serializers.StringRelatedField()
 
+    supply_waiting = serializers.SerializerMethodField()
+    production_requirement = serializers.SerializerMethodField()
+
     class Meta:
         model = InventoryItem
         fields = [
             "id",
             "uuid",
-            # "code",
             "fabric",
             "color",
             "unit",
             "accessory",
             "quantity",
             "is_active",
+            "supply_waiting",
+            "production_requirement",
         ]
 
+    def get_supply_waiting(self, obj):
 
+        filters = {
+            "supply_order__status": "ordered",
+            "color_id": obj.color_id,
+        }
+
+        if obj.fabric_id:
+            filters["fabric_id"] = obj.fabric_id
+            filters["accessory__isnull"] = True
+
+        elif obj.accessory_id:
+            filters["accessory_id"] = obj.accessory_id
+            filters["fabric__isnull"] = True
+
+        else:
+            return Decimal("0.00")
+
+        quantity = (
+            SupplyOrderItem.objects
+            .filter(**filters)
+            .aggregate(
+                total=Sum("ordered_quantity")
+            )["total"]
+        )
+
+        return quantity or Decimal("0.00")
+
+    def get_production_requirement(self, obj):
+
+        total = Decimal("0.00")
+
+        production_orders = (
+            ProductionOrder.objects
+            .filter(
+                status=ProductionOrder.Status.WAITING
+            )
+            .select_related("product")
+            .prefetch_related("product__items")
+        )
+
+        for production in production_orders:
+
+            for item in production.product.items.all():
+
+                if (
+                    item.fabric_id != obj.fabric_id
+                    or item.accessory_id != obj.accessory_id
+                    or item.color_id != obj.color_id
+                    or item.unit_id != obj.unit_id
+                ):
+                    continue
+
+                total += (
+                    Decimal(item.quantity)
+                    * Decimal(production.quantity)
+                )
+
+        return total
 
 
 class InventoryItemWriteSerializer(serializers.ModelSerializer):
@@ -72,16 +138,13 @@ class InventoryItemWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventoryItem
         fields = [
-            # "code",
             "fabric",
             "color",
             "unit",
             "accessory",
             "is_active",
-            "quantity"
+            "quantity",
         ]
-
-
 
 
 class InventoryItemRetrieveSerializer(serializers.ModelSerializer):
@@ -91,21 +154,26 @@ class InventoryItemRetrieveSerializer(serializers.ModelSerializer):
     color_details = serializers.SerializerMethodField()
     unit_details = serializers.SerializerMethodField()
 
+    supply_waiting = serializers.SerializerMethodField()
+    production_requirement = serializers.SerializerMethodField()
+
     class Meta:
         model = InventoryItem
         fields = [
             "id",
             "uuid",
-            # "code",
             "fabric_details",
             "color_details",
             "unit_details",
             "accessory_details",
             "quantity",
             "is_active",
+            "supply_waiting",
+            "production_requirement",
         ]
 
     def get_fabric_details(self, obj):
+
         if not obj.fabric:
             return None
 
@@ -116,6 +184,7 @@ class InventoryItemRetrieveSerializer(serializers.ModelSerializer):
         }
 
     def get_accessory_details(self, obj):
+
         if not obj.accessory:
             return None
 
@@ -126,6 +195,7 @@ class InventoryItemRetrieveSerializer(serializers.ModelSerializer):
         }
 
     def get_color_details(self, obj):
+
         return {
             "id": obj.color.id,
             "uuid": str(obj.color.uuid),
@@ -133,8 +203,69 @@ class InventoryItemRetrieveSerializer(serializers.ModelSerializer):
         }
 
     def get_unit_details(self, obj):
+
         return {
             "id": obj.unit.id,
             "uuid": str(obj.unit.uuid),
             "identity": obj.unit.identity,
         }
+
+    def get_supply_waiting(self, obj):
+
+        filters = {
+            "supply_order__status": "ordered",
+            "color_id": obj.color_id,
+        }
+
+        if obj.fabric_id:
+            filters["fabric_id"] = obj.fabric_id
+            filters["accessory__isnull"] = True
+
+        elif obj.accessory_id:
+            filters["accessory_id"] = obj.accessory_id
+            filters["fabric__isnull"] = True
+
+        else:
+            return Decimal("0.00")
+
+        quantity = (
+            SupplyOrderItem.objects
+            .filter(**filters)
+            .aggregate(
+                total=Sum("ordered_quantity")
+            )["total"]
+        )
+
+        return quantity or Decimal("0.00")
+
+    def get_production_requirement(self, obj):
+
+        total = Decimal("0.00")
+
+        production_orders = (
+            ProductionOrder.objects
+            .filter(
+                status=ProductionOrder.Status.WAITING
+            )
+            .select_related("product")
+            .prefetch_related("product__items")
+        )
+
+        for production in production_orders:
+
+            for item in production.product.items.all():
+
+                if (
+                    item.fabric_id != obj.fabric_id
+                    or item.accessory_id != obj.accessory_id
+                    or item.color_id != obj.color_id
+                    or item.unit_id != obj.unit_id
+                ):
+                    continue
+
+                total += (
+                    Decimal(item.quantity)
+                    * Decimal(production.quantity)
+                )
+
+        return total

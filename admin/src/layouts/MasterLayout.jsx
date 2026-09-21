@@ -36,7 +36,7 @@ const MasterLayout = () => {
 
     const fetchProfile = async () => {
         try {
-            const response = await api.get("user/profile/");
+            const response = await api.get("auth/profile/");
             setUser(response.data);
         } catch (error) {
             console.error("Failed to fetch profile", error);
