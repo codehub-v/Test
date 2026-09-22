@@ -269,7 +269,7 @@ const CustomerList = () => {
                           <Pencil size={16} />
                         </button>
 
-                        {/* Delete */}
+                        {/* Delete 
                         <button
                           onClick={() => handleDelete(customer.id)}
                           style={{
@@ -279,7 +279,7 @@ const CustomerList = () => {
                           title="Delete"
                         >
                           <Trash2 size={15} />
-                        </button>
+                        </button>*/}
                       </div>
                     </td>
                   </tr>
