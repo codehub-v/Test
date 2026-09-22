@@ -62,6 +62,14 @@ const MasterLayout = () => {
         return getUserName().charAt(0).toUpperCase();
     };
 
+    const hasPermission = (permission) => {
+        if (user.is_superuser) {
+            return true;
+        }
+
+        return user.role_details?.[permission] === true;
+    };
+
     return (
         <div
             className={`erp-layout ${
@@ -86,7 +94,11 @@ const MasterLayout = () => {
                 <button
                     className="sidebar-toggle"
                     onClick={() => setCollapsed(!collapsed)}
-                    title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                    title={
+                        collapsed
+                            ? "Expand sidebar"
+                            : "Collapse sidebar"
+                    }
                 >
                     {collapsed ? (
                         <Menu size={17} />
@@ -115,160 +127,225 @@ const MasterLayout = () => {
                         MASTER DATA
                     </div>
 
-                    <NavLink
-                        to="/customers"
-                        className="menu-item"
-                        title="Customers"
-                    >
-                        <Users size={17} />
-                        {!collapsed && <span>Customers</span>}
-                    </NavLink>
+                    {hasPermission("customer") && (
+                        <NavLink
+                            to="/customers"
+                            className="menu-item"
+                            title="Customers"
+                        >
+                            <Users size={17} />
+                            {!collapsed && <span>Customers</span>}
+                        </NavLink>
+                    )}
 
-                    <NavLink
-                        to="/suppliers"
-                        className="menu-item"
-                        title="Suppliers"
-                    >
-                        <Truck size={17} />
-                        {!collapsed && <span>Suppliers</span>}
-                    </NavLink>
+                    {hasPermission("supplier") && (
+                        <NavLink
+                            to="/suppliers"
+                            className="menu-item"
+                            title="Suppliers"
+                        >
+                            <Truck size={17} />
+                            {!collapsed && <span>Suppliers</span>}
+                        </NavLink>
+                    )}
 
-                    <NavLink
-                        to="/accessory"
-                        className="menu-item"
-                        title="Accessory"
-                    >
-                        <Truck size={17} />
-                        {!collapsed && <span>Accessory</span>}
-                    </NavLink>
+                    {hasPermission("accessory") && (
+                        <NavLink
+                            to="/accessory"
+                            className="menu-item"
+                            title="Accessory"
+                        >
+                            <Truck size={17} />
+                            {!collapsed && <span>Accessory</span>}
+                        </NavLink>
+                    )}
 
-                    <NavLink
-                        to="/colors"
-                        className="menu-item"
-                        title="Colors"
-                    >
-                        <Palette size={17} />
-                        {!collapsed && <span>Colors</span>}
-                    </NavLink>
+                    {hasPermission("color") && (
+                        <NavLink
+                            to="/colors"
+                            className="menu-item"
+                            title="Colors"
+                        >
+                            <Palette size={17} />
+                            {!collapsed && <span>Colors</span>}
+                        </NavLink>
+                    )}
 
-                    <NavLink
-                        to="/styles"
-                        className="menu-item"
-                        title="Styles"
-                    >
-                        <Shirt size={17} />
-                        {!collapsed && <span>Styles</span>}
-                    </NavLink>
+                    {hasPermission("style") && (
+                        <NavLink
+                            to="/styles"
+                            className="menu-item"
+                            title="Styles"
+                        >
+                            <Shirt size={17} />
+                            {!collapsed && <span>Styles</span>}
+                        </NavLink>
+                    )}
 
-                    <NavLink
-                        to="/fabrics"
-                        className="menu-item"
-                        title="Fabrics"
-                    >
-                        <Layers size={17} />
-                        {!collapsed && <span>Fabrics</span>}
-                    </NavLink>
+                    {hasPermission("fabric") && (
+                        <NavLink
+                            to="/fabrics"
+                            className="menu-item"
+                            title="Fabrics"
+                        >
+                            <Layers size={17} />
+                            {!collapsed && <span>Fabrics</span>}
+                        </NavLink>
+                    )}
 
-                    <NavLink
-                        to="/sizes"
-                        className="menu-item"
-                        title="Sizes"
-                    >
-                        <Ruler size={17} />
-                        {!collapsed && <span>Sizes</span>}
-                    </NavLink>
+                    {hasPermission("size") && (
+                        <NavLink
+                            to="/sizes"
+                            className="menu-item"
+                            title="Sizes"
+                        >
+                            <Ruler size={17} />
+                            {!collapsed && <span>Sizes</span>}
+                        </NavLink>
+                    )}
 
-                    <NavLink
-                        to="/units"
-                        className="menu-item"
-                        title="Units"
-                    >
-                        <Scale size={17} />
-                        {!collapsed && <span>Units</span>}
-                    </NavLink>
+                    {hasPermission("unit") && (
+                        <NavLink
+                            to="/units"
+                            className="menu-item"
+                            title="Units"
+                        >
+                            <Scale size={17} />
+                            {!collapsed && <span>Units</span>}
+                        </NavLink>
+                    )}
 
-                    <NavLink
-                        to="/seasons"
-                        className="menu-item"
-                        title="Seasons"
-                    >
-                        <Factory size={17} />
-                        {!collapsed && <span>Seasons</span>}
-                    </NavLink>
+                    {hasPermission("season") && (
+                        <NavLink
+                            to="/seasons"
+                            className="menu-item"
+                            title="Seasons"
+                        >
+                            <Factory size={17} />
+                            {!collapsed && <span>Seasons</span>}
+                        </NavLink>
+                    )}
 
-                    <NavLink
-                        to="/bom"
-                        className="menu-item"
-                        title="BOM"
-                    >
-                        <Boxes size={17} />
-                        {!collapsed && <span>BOM</span>}
-                    </NavLink>
+                    {hasPermission("bom") && (
+                        <NavLink
+                            to="/bom"
+                            className="menu-item"
+                            title="BOM"
+                        >
+                            <Boxes size={17} />
+                            {!collapsed && <span>BOM</span>}
+                        </NavLink>
+                    )}
 
                     <div className="menu-section">
                         INVENTORY
                     </div>
 
-                    <NavLink
-                        to="/items"
-                        className="menu-item"
-                        title="Items"
-                    >
-                        <Package size={17} />
-                        {!collapsed && <span>Items</span>}
-                    </NavLink>
+                    {hasPermission("inventory") && (
+                        <NavLink
+                            to="/items"
+                            className="menu-item"
+                            title="Items"
+                        >
+                            <Package size={17} />
+                            {!collapsed && <span>Items</span>}
+                        </NavLink>
+                    )}
 
-                    <NavLink
-                        to="/stock-log"
-                        className="menu-item"
-                        title="Stock Transactions"
-                    >
-                        <ArrowDownUp size={17} />
-                        {!collapsed && <span>Stock Transactions</span>}
-                    </NavLink>
+                    {hasPermission("stock") && (
+                        <NavLink
+                            to="/stock-log"
+                            className="menu-item"
+                            title="Stock Transactions"
+                        >
+                            <ArrowDownUp size={17} />
+                            {!collapsed && (
+                                <span>Stock Transactions</span>
+                            )}
+                        </NavLink>
+                    )}
 
-                    <NavLink
-                        to="/supply"
-                        className="menu-item"
-                        title="Supply Order"
-                    >
-                        <Truck  size={17} />
-                        {!collapsed && <span>Supply Order</span>}
-                    </NavLink>
+                    {hasPermission("supply_order") && (
+                        <NavLink
+                            to="/supply"
+                            className="menu-item"
+                            title="Supply Order"
+                        >
+                            <Truck size={17} />
+                            {!collapsed && (
+                                <span>Supply Order</span>
+                            )}
+                        </NavLink>
+                    )}
 
                     <div className="menu-section">
                         PRODUCTION
                     </div>
 
-                    <NavLink
-                        to="/orders"
-                        className="menu-item"
-                        title="Production Orders"
-                    >
-                        <ClipboardList size={17} />
-                        {!collapsed && <span>Production Orders</span>}
-                    </NavLink>
-                    <NavLink
-                        to="/deliveries"
-                        className="menu-item"
-                        title="Delivery"
-                    >
-                        <Truck size={17} />
-                        {!collapsed && <span>Delivery</span>}
-                    </NavLink>
+                    {hasPermission("production") && (
+                        <NavLink
+                            to="/orders"
+                            className="menu-item"
+                            title="Production Orders"
+                        >
+                            <ClipboardList size={17} />
+                            {!collapsed && (
+                                <span>Production Orders</span>
+                            )}
+                        </NavLink>
+                    )}
+
+                    {hasPermission("delivery") && (
+                        <NavLink
+                            to="/deliveries"
+                            className="menu-item"
+                            title="Delivery"
+                        >
+                            <Truck size={17} />
+                            {!collapsed && <span>Delivery</span>}
+                        </NavLink>
+                    )}
 
                     <div className="menu-section">
                         REPORTS
                     </div>
 
-                    <NavLink
-                        to="/reports"
-                        className="menu-item"
-                        title="Reports"
-                    >
-                        <BarChart3 size={17} />
-                        {!collapsed && <span>Reports</span>}
-                    </NavLink>
+                    {hasPermission("reports") && (
+                        <NavLink
+                            to="/reports"
+                            className="menu-item"
+                            title="Reports"
+                        >
+                            <BarChart3 size={17} />
+                            {!collapsed && <span>Reports</span>}
+                        </NavLink>
+                    )}
+
+                    <div className="menu-section">
+                        SYSTEM
+                    </div>
+
+                    {hasPermission("users") && (
+                        <NavLink
+                            to="/users"
+                            className="menu-item"
+                            title="Users"
+                        >
+                            <Users size={17} />
+                            {!collapsed && <span>Users</span>}
+                        </NavLink>
+                    )}
+
+                    {hasPermission("roles") && (
+                        <NavLink
+                            to="/roles"
+                            className="menu-item"
+                            title="Roles"
+                        >
+                            <Users size={17} />
+                            {!collapsed && <span>Roles</span>}
+                        </NavLink>
+                    )}
 
                 </nav>
 
@@ -286,7 +363,8 @@ const MasterLayout = () => {
                                 </strong>
 
                                 <span>
-                                    {user.role || "User"}
+                                    {user.role_details?.identity ||
+                                        "User"}
                                 </span>
                             </div>
 

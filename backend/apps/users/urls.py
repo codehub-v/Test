@@ -5,7 +5,8 @@ from apps.users.views import (
     LoginAPI,
     LogoutAPI,
     UserProfile,
-    UserViewSet,DashboardAPIView
+    UserViewSet,DashboardAPIView,
+    RoleViewSet, RoleMetaViewSet
 )
 from apps.users.views.reports import InventoryReportAPIView, ProductionReportAPIView, SupplyOrderReportAPIView
 
@@ -14,7 +15,18 @@ router = DefaultRouter()
 router.register(
     "users",
     UserViewSet,
-    basename="user"
+    basename="users"
+)
+
+router.register(
+    "roles",
+    RoleViewSet,
+    basename="roles"
+)
+router.register(
+    "meta/roles",
+    RoleMetaViewSet,
+    basename="meta-roles"
 )
 
 

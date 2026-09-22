@@ -44,6 +44,12 @@ import Reports from "./pages/Reports";
 import DeliveryList from "./pages/Inventory/Delivery/DeliveryList";
 import DeliveryForm from "./pages/Inventory/Delivery/DeliveryForm";
 import DeliveryDetails from "./pages/Inventory/Delivery/DeliveryDetails";
+import UserList from "./pages/Users/UserList";
+import UserForm from "./pages/Users/UserForm";
+import UserDetails from "./pages/Users/UserDetails";
+import RoleDetails from "./pages/Users/RoleDetails";
+import RoleForm from "./pages/Users/RoleForm";
+import RoleList from "./pages/Users/RoleList";
 
 function App() {
     return (
@@ -109,6 +115,16 @@ function App() {
                         <Route path="deliveries/add" element={<DeliveryForm />} /> 
                         <Route path="deliveries/add/:id" element={<DeliveryForm />} /> 
                         <Route path="deliveries/details/:id" element={<DeliveryDetails />} /> 
+
+                        <Route path="users" element={<UserList />} /> 
+                        <Route path="users/add" element={<UserForm />} /> 
+                        <Route path="users/add/:id" element={<UserForm />} /> 
+                        <Route path="users/details/:id" element={<UserDetails />} /> 
+
+                        <Route path="roles" element={<RoleList />} /> 
+                        <Route path="roles/add" element={<RoleForm />} /> 
+                        <Route path="roles/add/:id" element={<RoleForm />} /> 
+                        <Route path="roles/details/:id" element={<RoleDetails />} /> 
                     </Route>
                 </Route>
 

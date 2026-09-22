@@ -3,7 +3,7 @@
 MODEL: admin.LogEntry
 ================================================================================
 id | AutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-action_time | DateTimeField | null=False | blank=False | default=<function now at 0x00000130202EC510>
+action_time | DateTimeField | null=False | blank=False | default=<function now at 0x0000018913846E50>
 user | ForeignKey | null=False | blank=False | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 content_type | ForeignKey | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 object_id | TextField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -54,6 +54,33 @@ user | OneToOneField | null=False | blank=False | default=<class 'django.db.mode
 created | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 
 ================================================================================
+MODEL: users.Role
+================================================================================
+id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+identity | CharField | null=False | blank=False | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+style | BooleanField | null=False | blank=False | default=False
+season | BooleanField | null=False | blank=False | default=False
+size | BooleanField | null=False | blank=False | default=False
+color | BooleanField | null=False | blank=False | default=False
+fabric | BooleanField | null=False | blank=False | default=False
+accessory | BooleanField | null=False | blank=False | default=False
+category | BooleanField | null=False | blank=False | default=False
+customer | BooleanField | null=False | blank=False | default=False
+supplier | BooleanField | null=False | blank=False | default=False
+bom | BooleanField | null=False | blank=False | default=False
+inventory | BooleanField | null=False | blank=False | default=False
+stock | BooleanField | null=False | blank=False | default=False
+supply_order | BooleanField | null=False | blank=False | default=False
+production | BooleanField | null=False | blank=False | default=False
+delivery | BooleanField | null=False | blank=False | default=False
+reports | BooleanField | null=False | blank=False | default=False
+users | BooleanField | null=False | blank=False | default=False
+roles | BooleanField | null=False | blank=False | default=False
+is_active | BooleanField | null=False | blank=False | default=True
+created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+
+================================================================================
 MODEL: users.User
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -62,7 +89,8 @@ last_login | DateTimeField | null=True | blank=True | default=<class 'django.db.
 is_superuser | BooleanField | null=False | blank=False | default=False
 identity | CharField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 email | EmailField | null=False | blank=False | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-role | CharField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+phone | CharField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+role | ForeignKey | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 is_staff | BooleanField | null=False | blank=False | default=False
 is_active | BooleanField | null=False | blank=False | default=True
 
@@ -70,7 +98,7 @@ is_active | BooleanField | null=False | blank=False | default=True
 MODEL: master.Color
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -81,7 +109,7 @@ code | CharField | null=False | blank=False | default=<class 'django.db.models.f
 MODEL: master.Customer
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -96,7 +124,7 @@ pincode | CharField | null=True | blank=True | default=<class 'django.db.models.
 MODEL: master.Fabric
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -107,7 +135,7 @@ code | CharField | null=False | blank=False | default=<class 'django.db.models.f
 MODEL: master.Size
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -118,7 +146,7 @@ code | CharField | null=False | blank=False | default=<class 'django.db.models.f
 MODEL: master.Style
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -129,7 +157,7 @@ code | CharField | null=False | blank=False | default=<class 'django.db.models.f
 MODEL: master.Supplier
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -144,7 +172,7 @@ pincode | CharField | null=True | blank=True | default=<class 'django.db.models.
 MODEL: master.Unit
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -155,7 +183,7 @@ code | CharField | null=False | blank=False | default=<class 'django.db.models.f
 MODEL: master.Season
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -166,7 +194,7 @@ code | CharField | null=False | blank=False | default=<class 'django.db.models.f
 MODEL: master.Accessory
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -177,7 +205,7 @@ code | CharField | null=False | blank=False | default=<class 'django.db.models.f
 MODEL: master.BOM
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -202,7 +230,7 @@ created_at | DateTimeField | null=False | blank=True | default=<class 'django.db
 MODEL: stocks.InventoryItem
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -216,7 +244,7 @@ quantity | DecimalField | null=False | blank=False | default=0
 MODEL: stocks.StockItem
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -227,7 +255,7 @@ quantity | DecimalField | null=False | blank=False | default=0
 MODEL: stocks.StockTransaction
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -267,7 +295,7 @@ created_at | DateTimeField | null=False | blank=True | default=<class 'django.db
 MODEL: stocks.ProductionOrder
 ================================================================================
 id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
-uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x000001302059AFB0>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
 is_active | BooleanField | null=False | blank=False | default=True
 created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
@@ -277,9 +305,29 @@ quantity | PositiveIntegerField | null=False | blank=False | default=<class 'dja
 production_line | CharField | null=False | blank=False | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 status | CharField | null=False | blank=False | default=ProductionOrder.Status.WAITING
 cutting_date | DateField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+customer | ForeignKey | null=False | blank=False | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 stitching_date | DateField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 sewing_date | DateField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 finishing_date | DateField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 completed_date | DateField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 cancelled_date | DateField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+remarks | TextField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+
+================================================================================
+MODEL: stocks.Delivery
+================================================================================
+id | BigAutoField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+uuid | UUIDField | null=False | blank=False | default=<function uuid4 at 0x0000018912F2FB60>
+is_active | BooleanField | null=False | blank=False | default=True
+created_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+updated_at | DateTimeField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+delivery_no | CharField | null=False | blank=False | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+production_order | ForeignKey | null=False | blank=False | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+quantity | PositiveIntegerField | null=False | blank=False | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+status | CharField | null=False | blank=False | default=Delivery.Status.PACKED
+packed_at | DateTimeField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+dispatched_at | DateTimeField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+delivered_at | DateTimeField | null=True | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+delivery_address | TextField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
+vehicle_number | CharField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>
 remarks | TextField | null=False | blank=True | default=<class 'django.db.models.fields.NOT_PROVIDED'>

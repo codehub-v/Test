@@ -27,7 +27,7 @@ class LoginAPI(APIView):
                     "id": user.id,
                     "email": user.email,
                     "identity": user.identity,
-                    "role": user.role,
+
                 }
             },
             status=status.HTTP_200_OK
@@ -52,3 +52,4 @@ class UserProfile(APIView):
         user = request.user
         serializer = UserProfileSerializer(instance=user)
         return Response(serializer.data)
+    
